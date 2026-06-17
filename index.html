@@ -160,7 +160,7 @@
   }
 
   /* ---------- Sections ---------- */
-  section    { padding: 72px 0; }
+  section    { padding: 72px 0; scroll-margin-top: 72px; }
   section.alt { background: var(--surface); }
   section.dark { background: var(--espresso); }
   section.dark .section-head h2 { color: var(--on-espresso); }
@@ -205,7 +205,7 @@
     color: oklch(88% 0.04 70); margin-bottom: 18px; letter-spacing: 3px;
   }
   .hero-content h1 {
-    color: #fff; text-wrap: balance;
+    color: oklch(97% 0.008 80); text-wrap: balance;
     font-size: clamp(2.8rem, 6vw, 4.8rem);
     max-width: 16ch; margin-bottom: 20px;
     text-shadow: 0 2px 16px oklch(0% 0 0 / 0.4);
@@ -256,7 +256,8 @@
   .dish-cards {
     display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
   }
-  @media (max-width: 860px) { .dish-cards { grid-template-columns: 1fr; } }
+  @media (max-width: 860px) and (min-width: 560px) { .dish-cards { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { .dish-cards { grid-template-columns: 1fr; } }
 
   .dish-card {
     background: var(--surface); border-radius: 14px;
@@ -399,6 +400,7 @@
     display: flex; align-items: center; justify-content: center;
     color: oklch(68% 0.03 62);
   }
+  .about-photo img { width: 100%; height: 100%; object-fit: cover; }
   @media (max-width: 760px) { .about-grid { grid-template-columns: 1fr; } }
 
   /* ---------- Reservation ---------- */
@@ -430,6 +432,13 @@
   .hours-row:last-child { border-bottom: none; }
   .hours-row span:first-child { font-weight: 600; color: var(--ink); }
   .hours-row span:last-child { color: var(--ink-secondary); }
+
+  .location-heading {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 900; font-size: clamp(1.7rem, 3.4vw, 2.6rem);
+    color: var(--ink); line-height: 1.15; letter-spacing: -.3px;
+    margin: 0 0 .5em; max-width: none;
+  }
 
   .map-address {
     display: flex; align-items: center; gap: 7px;
@@ -546,7 +555,7 @@
       <div class="hero-content">
         <span class="eyebrow">Grill Étterem &amp; Saloon &nbsp;&bull;&nbsp; Csávoly</span>
         <h1>Texas&nbsp;Csávoly</h1>
-        <p class="lead">Steakek, burgerek és texasi hangulat Csávoly szívében.</p>
+        <p class="lead">2001 óta, ahol az ország legjobb steakje és az igazi Saloon-hangulat megvárja az országút vándorait.</p>
         <div class="hero-ctas">
           <a href="#reservation" class="btn">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -567,7 +576,7 @@
     <div class="container">
       <div class="section-head" data-reveal>
         <span class="eyebrow">Kedvenceink</span>
-        <h2>Étlap</h2>
+        <h2>Kedvenc fogásaink</h2>
         <p>A vendégeink által legtöbbször választott fogások — igazi Texas-klasszikusok.</p>
       </div>
       <div class="dish-cards">
@@ -716,7 +725,7 @@
 
         <div data-reveal data-delay="150">
           <span class="eyebrow">Hol találsz meg minket</span>
-          <h2>Csávoly, Széchenyi u.&nbsp;2.</h2>
+          <p class="location-heading">Csávoly, Széchenyi u.&nbsp;2.</p>
           <p class="map-address">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <path d="M21 10c0 6-9 12-9 12S3 16 3 10a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/>
@@ -804,26 +813,6 @@
     });
   };
   window.addEventListener('scroll', setActive, { passive: true });
-
-  // ---- Menu tabs (+ keyboard arrow nav) ----
-  const tabs = Array.from(document.querySelectorAll('.tab-btn'));
-  function activateTab(tab) {
-    tabs.forEach(t => { t.setAttribute('aria-selected', 'false'); t.tabIndex = -1; });
-    tab.setAttribute('aria-selected', 'true'); tab.tabIndex = 0; tab.focus();
-    document.querySelectorAll('.menu-panel').forEach(p => { p.hidden = true; });
-    const panel = document.getElementById(tab.getAttribute('aria-controls'));
-    panel.hidden = false;
-  }
-  tabs.forEach((tab, i) => {
-    tab.tabIndex = i === 0 ? 0 : -1;
-    tab.addEventListener('click', () => activateTab(tab));
-    tab.addEventListener('keydown', e => {
-      const dir = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
-      if (!dir) return;
-      e.preventDefault();
-      activateTab(tabs[(i + dir + tabs.length) % tabs.length]);
-    });
-  });
 
   // ---- Scroll reveal ----
   const revealEls = document.querySelectorAll('[data-reveal]');
