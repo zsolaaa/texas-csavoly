@@ -156,7 +156,7 @@
     nav ul.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
     nav li { width: 100%; }
     nav a { padding: 13px 24px; border-radius: 0; }
-    .nav-cta { margin: 8px 16px 0; border-radius: 8px !important; }
+    .nav-cta { margin: 4px 0 0 !important; border-radius: 0 !important; padding: 13px 24px !important; }
   }
 
   /* ---------- Sections ---------- */
@@ -229,6 +229,14 @@
   @media (max-width: 640px) {
     .hero { min-height: 85vh; }
     .hero-inner { padding: 0 0 52px; }
+    section { padding: 48px 0; }
+    .section-head { margin: 0 0 40px; }
+  }
+
+  @media (max-width: 560px) {
+    .hero-ctas { flex-direction: column; }
+    .hero-ctas .btn,
+    .hero-ctas .btn-outline { width: 100%; justify-content: center; }
   }
 
   /* ---------- Buttons ---------- */
@@ -256,7 +264,10 @@
   .dish-cards {
     display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
   }
-  @media (max-width: 860px) and (min-width: 560px) { .dish-cards { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 860px) and (min-width: 560px) {
+    .dish-cards { grid-template-columns: 1fr 1fr; }
+    .dish-card:last-child { grid-column: 1 / -1; }
+  }
   @media (max-width: 560px) { .dish-cards { grid-template-columns: 1fr; } }
 
   .dish-card {
@@ -384,7 +395,7 @@
   .gallery-item:nth-child(5) { background: linear-gradient(148deg, oklch(68% 0.11 45), oklch(58% 0.13 42)); color: oklch(80% 0.05 55); }
   .gallery-item:nth-child(6) { background: linear-gradient(148deg, oklch(87% 0.02 74), oklch(80% 0.03 70)); color: oklch(62% 0.03 64); }
 
-  @media (max-width: 680px) {
+  @media (max-width: 760px) {
     .gallery-grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 150px; }
     .gallery-item.tall { grid-row: span 1; }
   }
@@ -401,7 +412,10 @@
     color: oklch(68% 0.03 62);
   }
   .about-photo img { width: 100%; height: 100%; object-fit: cover; }
-  @media (max-width: 760px) { .about-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 760px) {
+    .about-grid { grid-template-columns: 1fr; }
+    .about-photo { aspect-ratio: 3/2; }
+  }
 
   /* ---------- Reservation ---------- */
   /* ---------- Reservation ---------- */
@@ -798,6 +812,19 @@
     navList.classList.remove('open');
     hamburger.setAttribute('aria-expanded', 'false');
   }));
+  document.addEventListener('click', e => {
+    if (!navList.contains(e.target) && !hamburger.contains(e.target) && navList.classList.contains('open')) {
+      navList.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && navList.classList.contains('open')) {
+      navList.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      hamburger.focus();
+    }
+  });
 
   // ---- Active nav highlight on scroll ----
   const sections = document.querySelectorAll('main section[id]');
