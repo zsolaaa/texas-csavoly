@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Texas Csávoly: Grill Étterem &amp; Saloon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="etterem.png">
+<style>
+  :root {
+    /* Lifted directly from the restaurant interior:
+       warm cream plaster walls · terracotta brick · dark walnut wood · slate-blue ceiling */
+    --bg:             oklch(92.5% 0.018 78);
+    --surface:        oklch(87.5% 0.022 74);
+    --surface-2:      oklch(82%   0.028 70);
+    --ink:            oklch(21%   0.042 50);
+    --ink-secondary:  oklch(43%   0.036 54);
+    /* Terracotta/brick — the téglaburkolat */
+    --primary:        oklch(50%   0.155 38);
+    --primary-hover:  oklch(43%   0.15  38);
+    --primary-light:  oklch(50%   0.155 38 / 0.10);
+    --primary-ink:    oklch(97%   0.008 80);
+    /* Slate-blue ceiling — used for focus ring & subtle highlights */
+    --blue:           oklch(44%   0.09  228);
+    /* Dark walnut — header/footer */
+    --espresso:       oklch(19%   0.042 46);
+    --espresso-2:     oklch(25%   0.048 48);
+    --espresso-3:     oklch(32%   0.05  50);
+    --on-espresso:    oklch(92%   0.018 78);
+    --on-espresso-dim:oklch(68%   0.025 70);
+    --border:         oklch(80%   0.022 68);
+    --border-strong:  oklch(67%   0.028 62);
+    --error:          oklch(52%   0.18  25);
+    --success:        oklch(48%   0.12  145);
+    --radius:         10px;
+    --radius-sm:      6px;
+
+    /* Emil-grade custom easing — never use browser defaults */
+    --ease-out:    cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 900;
+    margin: 0 0 .5em;
+    color: var(--ink);
+    line-height: 1.15;
+    letter-spacing: -.5px;
+  }
+  h3 {
+    font-weight: 700;
+    margin: 0 0 .5em;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  h1 { font-size: clamp(2.4rem, 5.5vw, 4rem); }
+  h2 { font-size: clamp(1.7rem, 3.4vw, 2.6rem); letter-spacing: -.3px; }
+  h3 { font-size: 1.05rem; }
+  p  { color: var(--ink-secondary); margin: 0 0 1em; max-width: 65ch; }
+  a  { color: var(--primary); text-decoration: none; }
+  img { max-width: 100%; display: block; }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---------- Accessibility ---------- */
+  .skip-link {
+    position: absolute; left: -999px; top: 0;
+    background: var(--primary); color: var(--primary-ink); padding: 10px 16px;
+    z-index: 1000; border-radius: 0 0 var(--radius-sm) 0;
+  }
+  .skip-link:focus { left: 0; top: 0; }
+  :focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; border-radius: 3px; }
+
+  /* ---------- Header ---------- */
+  header {
+    position: sticky; top: 0; z-index: 100;
+    background: oklch(22% 0.025 48 / 0.97);
+    backdrop-filter: blur(10px) saturate(1.3);
+    border-bottom: 1px solid var(--espresso-2);
+  }
+  .nav-wrap {
+    max-width: 1200px; margin: 0 auto; padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+  }
+  .logo {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 900; font-size: 1.22rem; letter-spacing: .3px;
+    color: var(--on-espresso); display: flex; align-items: center; gap: 2px;
+  }
+  .logo strong { color: var(--primary); }
+
+  nav ul {
+    display: flex; gap: 2px; list-style: none; margin: 0; padding: 0;
+    align-items: center;
+  }
+  nav a {
+    color: var(--on-espresso-dim); font-weight: 500; font-size: .88rem;
+    padding: 8px 11px; border-radius: var(--radius-sm);
+    transition: color 160ms var(--ease-out), background 160ms var(--ease-out);
+    display: flex; align-items: center; min-height: 40px;
+  }
+  nav a[aria-current="page"] { color: var(--on-espresso); background: var(--espresso-2); }
+  nav a:not(.nav-cta):hover  { color: var(--on-espresso); background: oklch(30% 0.025 48); }
+
+  .nav-cta {
+    background: var(--primary); color: var(--primary-ink) !important;
+    padding: 9px 18px !important; border-radius: 8px !important;
+    font-weight: 700 !important; margin-left: 10px;
+    transition: background 160ms var(--ease-out), transform 140ms var(--ease-out) !important;
+  }
+  .nav-cta:hover { background: var(--primary-hover) !important; }
+  .nav-cta:active { transform: scale(0.96) !important; }
+
+  /* Hamburger — SVG lines morph to ✕ */
+  .hamburger {
+    display: none; background: none; border: none; cursor: pointer;
+    width: 44px; height: 44px; padding: 10px; border-radius: var(--radius-sm);
+    transition: background 160ms var(--ease-out);
+  }
+  .hamburger:hover { background: var(--espresso-2); }
+  .hamburger-icon .bar {
+    stroke: var(--on-espresso); stroke-width: 2; stroke-linecap: round;
+    transform-box: fill-box; transform-origin: center;
+    transition: transform 280ms var(--ease-out), opacity 180ms ease;
+  }
+  .hamburger[aria-expanded="true"] .bar-1 { transform: translateY(6px) rotate(45deg); }
+  .hamburger[aria-expanded="true"] .bar-2 { opacity: 0; transform: scaleX(0); }
+  .hamburger[aria-expanded="true"] .bar-3 { transform: translateY(-6px) rotate(-45deg); }
+
+  @media (max-width: 860px) {
+    .hamburger { display: flex; align-items: center; justify-content: center; }
+    nav ul {
+      position: fixed; top: 64px; left: 0; right: 0;
+      background: var(--espresso); flex-direction: column; gap: 0;
+      padding: 8px 0 16px; border-bottom: 1px solid var(--espresso-2);
+      transform: translateY(-10px); opacity: 0;
+      transition: transform 260ms var(--ease-out), opacity 200ms var(--ease-out);
+      pointer-events: none; align-items: stretch;
+    }
+    nav ul.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+    nav li { width: 100%; }
+    nav a { padding: 13px 24px; border-radius: 0; }
+    .nav-cta { margin: 8px 16px 0; border-radius: 8px !important; }
+  }
+
+  /* ---------- Sections ---------- */
+  section    { padding: 72px 0; }
+  section.alt { background: var(--surface); }
+  section.dark { background: var(--espresso); }
+  section.dark .section-head h2 { color: var(--on-espresso); }
+  section.dark .section-head .eyebrow { color: var(--primary); }
+  section.dark .section-head p { color: var(--on-espresso-dim); }
+  .section-head { max-width: 680px; margin: 0 0 64px; }
+  .section-head .eyebrow { display: block; margin-bottom: 12px; }
+  .eyebrow {
+    color: var(--primary); font-weight: 700; letter-spacing: 2.5px;
+    text-transform: uppercase; font-size: .76rem; display: block;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    position: relative; min-height: 90vh; display: flex;
+    align-items: flex-end; overflow: hidden;
+    background: url('etterem.png') center 35% / cover no-repeat;
+  }
+  /* Two-axis overlay: bottom-up dark fade + left-side scrim for text legibility */
+  .hero::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background:
+      linear-gradient(90deg,
+        oklch(12% 0.03 46 / 0.72)  0%,
+        oklch(12% 0.03 46 / 0.45) 45%,
+        transparent                70%
+      ),
+      linear-gradient(180deg,
+        transparent                 0%,
+        transparent                38%,
+        oklch(12% 0.03 46 / 0.78) 72%,
+        oklch(12% 0.03 46 / 0.98) 100%
+      );
+  }
+  .hero-inner {
+    position: relative; z-index: 1; width: 100%; padding: 0 0 80px;
+  }
+  .hero-content {
+    max-width: 1100px; margin: 0 auto; padding: 0 24px;
+  }
+  .hero-content .eyebrow {
+    color: oklch(88% 0.04 70); margin-bottom: 18px; letter-spacing: 3px;
+  }
+  .hero-content h1 {
+    color: #fff; text-wrap: balance;
+    font-size: clamp(2.8rem, 6vw, 4.8rem);
+    max-width: 16ch; margin-bottom: 20px;
+    text-shadow: 0 2px 16px oklch(0% 0 0 / 0.4);
+  }
+  .hero-content p.lead {
+    color: oklch(91% 0.012 78); font-size: 1.1rem; line-height: 1.72;
+    max-width: 52ch; margin: 0 0 36px;
+  }
+  .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; }
+  /* Outline button inverted for dark photo overlay */
+  .hero .btn-outline {
+    border-color: oklch(85% 0.015 74 / 0.5);
+    color: oklch(93% 0.012 78); background: transparent;
+  }
+  .hero .btn-outline:hover {
+    border-color: oklch(93% 0.012 78 / 0.8);
+    background: oklch(97% 0.008 78 / 0.10);
+    color: oklch(97% 0.008 78);
+  }
+
+  @media (max-width: 640px) {
+    .hero { min-height: 85vh; }
+    .hero-inner { padding: 0 0 52px; }
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--primary); color: var(--primary-ink);
+    font-weight: 700; padding: 14px 28px; border-radius: 8px;
+    border: none; cursor: pointer; font-size: .95rem; min-height: 44px;
+    font-family: inherit;
+    transition: background 160ms var(--ease-out), transform 140ms var(--ease-out);
+  }
+  .btn:hover { background: var(--primary-hover); }
+  .btn:active { transform: scale(0.97); }
+
+  .btn-outline {
+    background: transparent; color: var(--ink);
+    border: 1.5px solid var(--border-strong);
+    transition: border-color 160ms var(--ease-out), color 160ms var(--ease-out),
+                background 160ms var(--ease-out), transform 140ms var(--ease-out);
+  }
+  .btn-outline:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+  .btn-outline:active { transform: scale(0.97); }
+
+  /* ---------- Dish cards ---------- */
+  .dish-cards {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  }
+  @media (max-width: 860px) { .dish-cards { grid-template-columns: 1fr; } }
+
+  .dish-card {
+    background: var(--surface); border-radius: 14px;
+    border: 1px solid var(--border);
+    overflow: hidden; display: flex; flex-direction: column;
+    transition: transform 220ms var(--ease-out), box-shadow 220ms var(--ease-out),
+                border-color 220ms var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .dish-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px oklch(12% 0.03 46 / 0.12);
+      border-color: var(--border-strong);
+    }
+  }
+  .dish-card:active { transform: scale(0.98); }
+
+  .dish-card-visual {
+    aspect-ratio: 4/3; background: var(--espresso-2);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .dish-card-visual svg { width: 56px; height: 56px; color: var(--on-espresso-dim); opacity: .4; }
+  .dish-card-visual img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .dish-card-visual::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 50%, oklch(19% 0.042 46 / 0.45) 100%);
+  }
+  .dish-card-badge {
+    position: absolute; bottom: 12px; left: 14px; z-index: 1;
+    background: var(--primary); color: var(--primary-ink);
+    font-size: .74rem; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; padding: 4px 10px; border-radius: 20px;
+  }
+
+  .dish-card-body { padding: 20px 20px 22px; display: flex; flex-direction: column; flex: 1; }
+  .dish-card-body h3 {
+    font-family: 'Playfair Display', serif; font-weight: 900;
+    font-size: 1.18rem; color: var(--ink); margin: 0 0 6px;
+  }
+  .dish-card-body p { font-size: .87rem; color: var(--ink-secondary); margin: 0 0 16px; flex: 1; }
+  .dish-card-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; margin-top: auto;
+  }
+  .dish-price { font-weight: 700; font-size: 1rem; color: var(--primary); }
+  .dish-link {
+    font-size: .82rem; font-weight: 600; color: var(--primary);
+    display: flex; align-items: center; gap: 4px;
+    transition: gap 160ms var(--ease-out);
+  }
+  .dish-link:hover { gap: 7px; }
+  .dish-link svg { flex-shrink: 0; }
+
+  /* ---------- Menu ---------- */
+  .menu-tabs { display: flex; gap: 8px; margin-bottom: 40px; flex-wrap: wrap; }
+  .tab-btn {
+    background: transparent; border: 1.5px solid var(--border-strong);
+    color: var(--ink-secondary); padding: 9px 20px; border-radius: 24px;
+    cursor: pointer; font-weight: 600; font-size: .88rem; min-height: 40px;
+    font-family: inherit;
+    transition: border-color 160ms var(--ease-out), color 160ms var(--ease-out),
+                background 160ms var(--ease-out), transform 140ms var(--ease-out);
+  }
+  .tab-btn[aria-selected="true"] {
+    background: var(--primary); color: var(--primary-ink); border-color: var(--primary);
+  }
+  .tab-btn:not([aria-selected="true"]):hover { border-color: var(--primary); color: var(--primary); }
+  .tab-btn:active { transform: scale(0.97); }
+
+  /* Panel fade-in via @starting-style (no JS needed for enter) */
+  .menu-panel { gap: 0; }
+  .menu-panel[hidden] { display: none; }
+  .menu-panel:not([hidden]) {
+    display: grid;
+    opacity: 1; transform: translateY(0);
+    animation: panelIn 220ms var(--ease-out) both;
+  }
+  @keyframes panelIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0);   }
+  }
+
+  .menu-item {
+    display: flex; justify-content: space-between; gap: 16px;
+    align-items: baseline; padding: 20px 0; border-bottom: 1px solid var(--border);
+  }
+  .menu-item:last-child { border-bottom: none; }
+  .menu-item h4 {
+    margin: 0 0 4px; font-size: 1rem; color: var(--ink);
+    font-weight: 700; line-height: 1.3; font-family: inherit;
+  }
+  .menu-item .desc  { font-size: .85rem; margin: 0; color: var(--ink-secondary); }
+  .menu-item .price { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--primary); white-space: nowrap; }
+
+  /* ---------- Gallery ---------- */
+  .gallery-grid {
+    display: grid; gap: 10px;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 180px;
+  }
+  .gallery-item {
+    border-radius: var(--radius); overflow: hidden; cursor: pointer;
+    border: 1px solid transparent;
+    display: flex; align-items: center; justify-content: center;
+    color: oklch(60% 0.03 60); position: relative;
+    transition: transform 220ms var(--ease-out), border-color 180ms ease;
+  }
+  /* Prevent false-positive hover on touch */
+  @media (hover: hover) and (pointer: fine) {
+    .gallery-item:hover { transform: scale(1.03); border-color: var(--border-strong); }
+    .gallery-item:hover svg { opacity: .5; }
+  }
+  .gallery-item:active { transform: scale(0.97); }
+  .gallery-item svg { width: 28%; height: 28%; opacity: .35; transition: opacity 160ms ease; }
+  .gallery-item.wide { grid-column: span 2; }
+  .gallery-item.tall { grid-row:    span 2; }
+
+  /* Distinct tonal backgrounds — replace each with a real photo */
+  .gallery-item:nth-child(1) { background: linear-gradient(148deg, oklch(28% 0.04 48), oklch(19% 0.03 45)); color: oklch(42% 0.05 50); }
+  .gallery-item:nth-child(2) { background: linear-gradient(148deg, oklch(80% 0.04 74), oklch(73% 0.05 70)); color: oklch(58% 0.04 65); }
+  .gallery-item:nth-child(3) { background: linear-gradient(148deg, oklch(76% 0.05 80), oklch(68% 0.06 76)); color: oklch(52% 0.05 72); }
+  .gallery-item:nth-child(4) { background: linear-gradient(148deg, oklch(42% 0.06 50), oklch(30% 0.04 47)); color: oklch(58% 0.05 52); }
+  .gallery-item:nth-child(5) { background: linear-gradient(148deg, oklch(68% 0.11 45), oklch(58% 0.13 42)); color: oklch(80% 0.05 55); }
+  .gallery-item:nth-child(6) { background: linear-gradient(148deg, oklch(87% 0.02 74), oklch(80% 0.03 70)); color: oklch(62% 0.03 64); }
+
+  @media (max-width: 680px) {
+    .gallery-grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 150px; }
+    .gallery-item.tall { grid-row: span 1; }
+  }
+
+  /* ---------- About ---------- */
+  .about-grid { display: grid; gap: 64px; grid-template-columns: .85fr 1.15fr; align-items: center; }
+  .about-photo {
+    aspect-ratio: 4/5; border-radius: var(--radius);
+    border: 1px solid var(--border); overflow: hidden;
+    background:
+      radial-gradient(ellipse 68% 58% at 28% 82%, oklch(55% 0.16 43 / 0.45), transparent 62%),
+      linear-gradient(158deg, oklch(73% 0.03 68), oklch(60% 0.04 62) 58%, oklch(47% 0.05 55));
+    display: flex; align-items: center; justify-content: center;
+    color: oklch(68% 0.03 62);
+  }
+  @media (max-width: 760px) { .about-grid { grid-template-columns: 1fr; } }
+
+  /* ---------- Reservation ---------- */
+  /* ---------- Reservation ---------- */
+  .reservation-grid {
+    display: grid; gap: 64px; grid-template-columns: 1fr 1fr; align-items: start;
+  }
+  @media (max-width: 860px) { .reservation-grid { grid-template-columns: 1fr; gap: 48px; } }
+
+  .btn-call {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--primary); color: var(--primary-ink);
+    font-size: 1.1rem; font-weight: 700; padding: 16px 28px;
+    border-radius: var(--radius); text-decoration: none;
+    margin: 28px 0 32px;
+    transition: background 160ms var(--ease-out), transform 140ms var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .btn-call:hover { background: var(--primary-hover); }
+  }
+  .btn-call:active { transform: scale(0.97); }
+
+  .hours-list { display: flex; flex-direction: column; gap: 10px; }
+  .hours-row {
+    display: flex; justify-content: space-between; gap: 16px;
+    font-size: .9rem; max-width: 300px;
+    padding-bottom: 10px; border-bottom: 1px solid var(--border);
+  }
+  .hours-row:last-child { border-bottom: none; }
+  .hours-row span:first-child { font-weight: 600; color: var(--ink); }
+  .hours-row span:last-child { color: var(--ink-secondary); }
+
+  .map-address {
+    display: flex; align-items: center; gap: 7px;
+    font-size: .92rem; color: var(--ink-secondary); margin: 0 0 16px;
+  }
+  .map-address svg { flex-shrink: 0; color: var(--primary); }
+  .map-frame {
+    width: 100%; aspect-ratio: 4/3; border-radius: var(--radius);
+    border: 1.5px solid var(--border); overflow: hidden;
+  }
+  .map-frame iframe { width: 100%; height: 100%; border: none; display: block; }
+
+  /* ---------- Footer ---------- */
+  footer { background: var(--espresso); padding: 64px 0 28px; }
+  .footer-grid {
+    display: grid; gap: 40px; grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    max-width: 1100px; margin: 0 auto; padding: 0 24px;
+  }
+  .footer-grid h4 {
+    color: var(--on-espresso); font-size: .92rem; margin-bottom: 16px;
+    font-weight: 700; letter-spacing: .2px;
+  }
+  .footer-grid p, .footer-grid a {
+    color: var(--on-espresso-dim); font-size: .86rem; line-height: 1.65;
+  }
+  .footer-grid a { display: block; margin-bottom: 6px; transition: color 140ms ease; }
+  .footer-grid a:hover { color: var(--primary); }
+  .footer-brand p { margin-bottom: 20px; }
+
+  .social-links { display: flex; gap: 10px; margin-top: 4px; }
+  .social-link {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--espresso-2); border: 1px solid var(--espresso-3);
+    color: var(--on-espresso-dim);
+    transition: border-color 160ms var(--ease-out), color 160ms var(--ease-out),
+                background 160ms var(--ease-out), transform 140ms var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .social-link:hover {
+      border-color: var(--primary); color: var(--primary);
+      background: var(--primary-light);
+    }
+  }
+  .social-link:active { transform: scale(0.93); }
+
+  @media (max-width: 760px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 480px) { .footer-grid { grid-template-columns: 1fr; } }
+
+  .footer-bottom {
+    text-align: center; margin-top: 48px; padding-top: 24px;
+    border-top: 1px solid var(--espresso-3);
+    font-size: .78rem; color: oklch(50% 0.022 52);
+    max-width: 1100px; margin-left: auto; margin-right: auto;
+    padding-left: 24px; padding-right: 24px;
+  }
+
+  /* ---------- Scroll reveal ---------- */
+  [data-reveal] {
+    opacity: 0; transform: translateY(22px);
+    transition: opacity 580ms var(--ease-out), transform 580ms var(--ease-out);
+  }
+  [data-reveal].visible  { opacity: 1; transform: translateY(0); }
+  [data-reveal][data-delay="100"] { transition-delay: 100ms; }
+  [data-reveal][data-delay="200"] { transition-delay: 200ms; }
+  [data-reveal][data-delay="300"] { transition-delay: 300ms; }
+  [data-reveal][data-delay="400"] { transition-delay: 400ms; }
+
+  /* ---------- Reduced motion ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration:       0.01ms !important;
+      animation-iteration-count: 1     !important;
+      transition-duration:      0.01ms !important;
+    }
+    html { scroll-behavior: auto; }
+    [data-reveal] { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Ugrás a tartalomhoz</a>
+
+<header>
+  <div class="nav-wrap">
+    <a class="logo" href="#home" aria-label="Texas Csávoly kezdőlap">
+      <strong>Texas</strong>&nbsp;Csávoly
+    </a>
+    <button class="hamburger" id="hamburgerBtn"
+            aria-expanded="false" aria-controls="navList" aria-label="Navigáció megnyitása">
+      <svg class="hamburger-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <line class="bar bar-1" x1="3" y1="6"  x2="21" y2="6"/>
+        <line class="bar bar-2" x1="3" y1="12" x2="21" y2="12"/>
+        <line class="bar bar-3" x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+    <nav aria-label="Fő navigáció">
+      <ul id="navList">
+        <li><a href="etlap.html">Étlap</a></li>
+        <li><a href="#gallery">Galéria</a></li>
+        <li><a href="#about">Rólunk</a></li>
+        <li><a href="#reservation" class="nav-cta">Asztalfoglalás</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- HERO ---------------------------------------------------------- -->
+  <section class="hero" id="home" aria-label="Texas Csávoly étterem belseje — grill étterem és saloon">
+    <div class="hero-inner">
+      <div class="hero-content">
+        <span class="eyebrow">Grill Étterem &amp; Saloon &nbsp;&bull;&nbsp; Csávoly</span>
+        <h1>Texas&nbsp;Csávoly</h1>
+        <p class="lead">Steakek, burgerek és texasi hangulat Csávoly szívében.</p>
+        <div class="hero-ctas">
+          <a href="#reservation" class="btn">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="2"/>
+              <path d="M16 2v4M8 2v4M3 10h18"/>
+            </svg>
+            Asztalfoglalás
+          </a>
+          <a href="etlap.html" class="btn btn-outline">Étlap megnézése</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES ------------------------------------------------------- -->
+  <section id="kedvenceink" aria-label="Kedvenceink">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <span class="eyebrow">Kedvenceink</span>
+        <h2>Étlap</h2>
+        <p>A vendégeink által legtöbbször választott fogások — igazi Texas-klasszikusok.</p>
+      </div>
+      <div class="dish-cards">
+        <article class="dish-card" data-reveal data-delay="0">
+          <div class="dish-card-visual">
+            <img src="etel.webp" alt="Texas Tál" loading="lazy">
+            <span class="dish-card-badge">Tál</span>
+          </div>
+          <div class="dish-card-body">
+            <h3>Texas Tál</h3>
+            <p>Marha hátszín steak, grillezett csirkecombfilé, grillezett sertéstarja, grillezett zöldségek, steak burgonya, csípős-ketchupos mártogató.</p>
+            <div class="dish-card-footer">
+              <span class="dish-price">6 000 Ft</span>
+              <a href="etlap.html#talak" class="dish-link">
+                Étlapra
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="dish-card" data-reveal data-delay="100">
+          <div class="dish-card-visual">
+            <img src="steak.webp" alt="Steak gombával, baconnel, sajttal" loading="lazy">
+            <span class="dish-card-badge">Steak</span>
+          </div>
+          <div class="dish-card-body">
+            <h3>Steak gombával, baconnel, sajttal</h3>
+            <p>Marha hátszín steak hagymás gombával, sült baconnel, sajt rágrillezve.</p>
+            <div class="dish-card-footer">
+              <span class="dish-price">5 950 Ft</span>
+              <a href="etlap.html#steakek" class="dish-link">
+                Étlapra
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="dish-card" data-reveal data-delay="200">
+          <div class="dish-card-visual">
+            <img src="hamburger.webp" alt="BBQ Bacon Burger" loading="lazy">
+            <span class="dish-card-badge">Burger</span>
+          </div>
+          <div class="dish-card-body">
+            <h3>BBQ Bacon Burger</h3>
+            <p>Marha húspogácsa, sajt, saláta, paradicsom, barbecue szósz, sült hagymakarika, sült bacon — 2 db + sült burgonya.</p>
+            <div class="dish-card-footer">
+              <span class="dish-price">3 800 Ft</span>
+              <a href="etlap.html#hamburger" class="dish-link">
+                Étlapra
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT ---------------------------------------------------------- -->
+  <section id="about" class="alt" aria-label="Rólunk">
+    <div class="container about-grid">
+      <div class="about-photo" data-reveal>
+        <img src="texasetterem.png" alt="A Texas Csávoly étterem belső tere">
+      </div>
+      <div data-reveal data-delay="100">
+        <span class="eyebrow">Rólunk</span>
+        <h2>A texasi hangulat Csávolyban</h2>
+        <p>Az épület helyén egykor kovácsműhely működött — a cégtábla ma is ott lóg a bárpult felett. 2001-ben a jelenlegi tulajdonosok ebből a térből varázsoltak vendéglőt, ötvözve a régi magyar kovácsvilág rusztikus hangulatát az amerikai Saloon atmoszférájával.</p>
+        <p>Tégla, fagerenda, állatbőr és eredeti észak-amerikai relikviák adják a hangulatot. 120 férőhelyes, klimatizált terem, halk country zene — legyen szó gyors ebédről, családi vacsoráról vagy baráti estéről.</p>
+        <p>Korszerű HACCP-konyha, friss alapanyagok, hazai és nemzetközi fogások. Ugyanaz a hely, ahol az országút vándorai 2001 óta megpihennek.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -------------------------------------------------------- -->
+  <section id="gallery" class="dark" aria-label="Fotó galéria">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <span class="eyebrow">Galéria</span>
+        <h2>Hangulat &amp; ízek</h2>
+      </div>
+      <div class="gallery-grid" data-reveal>
+        <div class="gallery-item wide tall">
+          <img src="etterem.jpg" alt="Texas Csávoly étterem belső tere" loading="lazy">
+        </div>
+        <div class="gallery-item">
+          <img src="belső.jpg" alt="Hangulatos éttermi belső" loading="lazy">
+        </div>
+        <div class="gallery-item">
+          <img src="barpult.jpg" alt="Barpult" loading="lazy">
+        </div>
+        <div class="gallery-item wide">
+          <img src="etterem4.jpg" alt="Étterem asztaloknézete" loading="lazy">
+        </div>
+        <div class="gallery-item">
+          <img src="2szemelyesasztal.jpg" alt="Kétszemélyes terített asztal" loading="lazy">
+        </div>
+        <div class="gallery-item">
+          <img src="etterem5.jpg" alt="Étterem hangulata" loading="lazy">
+        </div>
+        <div class="gallery-item wide">
+          <img src="etterem2.jpg" alt="Étterem panoráma" loading="lazy">
+        </div>
+        <div class="gallery-item">
+          <img src="etterem3.jpg" alt="Étterem részlet" loading="lazy">
+        </div>
+        <div class="gallery-item">
+          <img src="etterem6.jpg" alt="Étterem hangulat" loading="lazy">
+        </div>
+        <div class="gallery-item wide tall">
+          <img src="texasetterem.jpg" alt="Texas Csávoly étterem" loading="lazy">
+        </div>
+        <div class="gallery-item">
+          <img src="etterem7.jpg" alt="Étterem részlet" loading="lazy">
+        </div>
+        <div class="gallery-item">
+          <img src="etterem8.jpg" alt="Étterem részlet" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESERVATION ---------------------------------------------------- -->
+  <section id="reservation" aria-label="Asztalfoglalás">
+    <div class="container">
+      <div class="reservation-grid">
+
+        <div data-reveal>
+          <span class="eyebrow">Asztalfoglalás</span>
+          <h2>Foglaljon asztalt</h2>
+          <p>Hívjon minket és percek alatt egyeztetjük az időpontot és a részleteket.</p>
+          <a href="tel:+3679352186" class="btn-call" aria-label="Hívás: +36 79 352 186">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.97.36 1.92.68 2.83a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.32 1.86.55 2.83.68A2 2 0 0 1 22 16.92z"/>
+            </svg>
+            +36 79 352 186
+          </a>
+          <div class="hours-list">
+            <div class="hours-row"><span>Hétfő&ndash;Csütörtök</span><span>11:00&ndash;22:00</span></div>
+            <div class="hours-row"><span>Péntek</span><span>11:00&ndash;22:30</span></div>
+            <div class="hours-row"><span>Szombat&ndash;Vasárnap</span><span>11:00&ndash;22:00</span></div>
+          </div>
+        </div>
+
+        <div data-reveal data-delay="150">
+          <span class="eyebrow">Hol találsz meg minket</span>
+          <h2>Csávoly, Széchenyi u.&nbsp;2.</h2>
+          <p class="map-address">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M21 10c0 6-9 12-9 12S3 16 3 10a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+            6448 Csávoly, Széchenyi utca 2., Magyarország
+          </p>
+          <div class="map-frame">
+            <iframe
+              src="https://maps.google.com/maps?q=6448+Csávoly,+Széchenyi+utca+2&output=embed&hl=hu&z=16"
+              title="Texas Csávoly helyszíne a térképen"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <h4>Texas Csávoly</h4>
+      <p>Grill Étterem és Saloon. Texasi hangulat Csávoly szívében.</p>
+      <div class="social-links">
+        <a class="social-link" href="https://facebook.com" target="_blank" rel="noopener"
+           aria-label="Facebook oldalunk">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" aria-hidden="true">
+            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+    <div>
+      <h4>Elérhetőség</h4>
+      <p>6448 Csávoly, Széchenyi u. 2.</p>
+      <a href="tel:+3679352186">+36 79 352 186</a>
+    </div>
+    <div>
+      <h4>Nyitvatartás</h4>
+      <p>Hétfő&ndash;Csütörtök: 11:00&ndash;22:00</p>
+      <p>Péntek: 11:00&ndash;22:30</p>
+      <p>Szombat&ndash;Vasárnap: 11:00&ndash;22:00</p>
+    </div>
+    <div>
+      <h4>Navigáció</h4>
+      <a href="etlap.html">Étlap &amp; Itallap</a>
+      <a href="#gallery">Galéria</a>
+      <a href="#about">Rólunk</a>
+      <a href="#reservation">Asztalfoglalás</a>
+    </div>
+  </div>
+  <p class="footer-bottom">© 2026 Texas Csávoly. Minden jog fenntartva.</p>
+</footer>
+
+<script>
+  // ---- Hamburger toggle ----
+  const hamburger = document.getElementById('hamburgerBtn');
+  const navList   = document.getElementById('navList');
+  hamburger.addEventListener('click', () => {
+    const open = navList.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', open);
+  });
+  navList.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    navList.classList.remove('open');
+    hamburger.setAttribute('aria-expanded', 'false');
+  }));
+
+  // ---- Active nav highlight on scroll ----
+  const sections = document.querySelectorAll('main section[id]');
+  const navLinks  = document.querySelectorAll('nav a[href^="#"]');
+  const setActive = () => {
+    let current = sections[0].id;
+    sections.forEach(s => { if (scrollY + 80 >= s.offsetTop) current = s.id; });
+    navLinks.forEach(link => {
+      if (link.classList.contains('nav-cta')) return;
+      const match = link.getAttribute('href') === '#' + current;
+      match ? link.setAttribute('aria-current', 'page')
+            : link.removeAttribute('aria-current');
+    });
+  };
+  window.addEventListener('scroll', setActive, { passive: true });
+
+  // ---- Menu tabs (+ keyboard arrow nav) ----
+  const tabs = Array.from(document.querySelectorAll('.tab-btn'));
+  function activateTab(tab) {
+    tabs.forEach(t => { t.setAttribute('aria-selected', 'false'); t.tabIndex = -1; });
+    tab.setAttribute('aria-selected', 'true'); tab.tabIndex = 0; tab.focus();
+    document.querySelectorAll('.menu-panel').forEach(p => { p.hidden = true; });
+    const panel = document.getElementById(tab.getAttribute('aria-controls'));
+    panel.hidden = false;
+  }
+  tabs.forEach((tab, i) => {
+    tab.tabIndex = i === 0 ? 0 : -1;
+    tab.addEventListener('click', () => activateTab(tab));
+    tab.addEventListener('keydown', e => {
+      const dir = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (!dir) return;
+      e.preventDefault();
+      activateTab(tabs[(i + dir + tabs.length) % tabs.length]);
+    });
+  });
+
+  // ---- Scroll reveal ----
+  const revealEls = document.querySelectorAll('[data-reveal]');
+  const observer  = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  revealEls.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

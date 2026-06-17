@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Étlap &amp; Itallap — Texas Csávoly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:             oklch(92.5% 0.018 78);
+    --surface:        oklch(87.5% 0.022 74);
+    --surface-2:      oklch(82%   0.028 70);
+    --ink:            oklch(21%   0.042 50);
+    --ink-secondary:  oklch(43%   0.036 54);
+    --primary:        oklch(50%   0.155 38);
+    --primary-hover:  oklch(43%   0.15  38);
+    --primary-light:  oklch(50%   0.155 38 / 0.10);
+    --primary-ink:    oklch(97%   0.008 80);
+    --blue:           oklch(44%   0.09  228);
+    --espresso:       oklch(19%   0.042 46);
+    --espresso-2:     oklch(25%   0.048 48);
+    --espresso-3:     oklch(32%   0.05  50);
+    --on-espresso:    oklch(92%   0.018 78);
+    --on-espresso-dim:oklch(68%   0.025 70);
+    --border:         oklch(80%   0.022 68);
+    --border-strong:  oklch(67%   0.028 62);
+    --radius:         10px;
+    --radius-sm:      6px;
+    --ease-out:    cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 900; margin: 0 0 .4em; color: var(--ink); line-height: 1.15;
+  }
+  h2 { font-size: clamp(1.5rem, 3vw, 2rem); letter-spacing: -.3px; }
+  p { color: var(--ink-secondary); margin: 0 0 .8em; }
+  a { color: var(--primary); text-decoration: none; }
+
+  .skip-link {
+    position: absolute; left: -999px; top: 0;
+    background: var(--primary); color: var(--primary-ink); padding: 10px 16px; z-index: 1000;
+  }
+  .skip-link:focus { left: 0; }
+  :focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; border-radius: 3px; }
+
+  /* ── Header ── */
+  header {
+    position: sticky; top: 0; z-index: 100;
+    background: oklch(22% 0.025 48 / 0.97);
+    backdrop-filter: blur(10px) saturate(1.3);
+    border-bottom: 1px solid var(--espresso-2);
+  }
+  .nav-wrap {
+    max-width: 1200px; margin: 0 auto; padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between; height: 64px;
+  }
+  .logo {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 900; font-size: 1.22rem; color: var(--on-espresso);
+    display: flex; align-items: center; gap: 2px;
+  }
+  .logo strong { color: var(--primary); }
+  .back-link {
+    display: flex; align-items: center; gap: 7px;
+    color: var(--on-espresso-dim); font-size: .875rem; font-weight: 500;
+    padding: 8px 12px; border-radius: var(--radius-sm);
+    transition: color 160ms var(--ease-out), background 160ms var(--ease-out);
+  }
+  .back-link:hover { color: var(--on-espresso); background: var(--espresso-2); }
+  .back-link:active { transform: scale(0.97); }
+  .back-link svg { flex-shrink: 0; }
+
+  /* ── Hero band ── */
+  .menu-hero {
+    background: var(--espresso);
+    padding: 64px 24px 56px;
+    text-align: center;
+  }
+  .menu-hero .eyebrow {
+    color: var(--primary); font-weight: 700; letter-spacing: 2.5px;
+    text-transform: uppercase; font-size: .76rem; display: block; margin-bottom: 12px;
+  }
+  .menu-hero h1 {
+    font-family: 'Playfair Display', Georgia, serif; font-weight: 900;
+    font-size: clamp(2.4rem, 5vw, 3.6rem);
+    color: var(--on-espresso); margin: 0 0 12px;
+  }
+  .menu-hero p {
+    color: var(--on-espresso-dim); max-width: 52ch; margin: 0 auto;
+    font-size: 1rem;
+  }
+
+  /* ── Allergen accordion ── */
+  .allergen-wrap {
+    background: var(--surface); border-bottom: 1px solid var(--border);
+  }
+  .allergen-inner { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+  .allergen-toggle {
+    display: flex; align-items: center; justify-content: space-between;
+    width: 100%; background: none; border: none; cursor: pointer;
+    padding: 14px 0; color: var(--ink-secondary); font-size: .88rem; font-weight: 600;
+    transition: color 160ms var(--ease-out);
+  }
+  .allergen-toggle:hover { color: var(--ink); }
+  .allergen-toggle:active { transform: scale(0.99); }
+  .allergen-toggle svg { transition: transform 260ms var(--ease-out); flex-shrink: 0; }
+  .allergen-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+  .allergen-body {
+    display: grid; grid-template-rows: 0fr;
+    transition: grid-template-rows 280ms var(--ease-out);
+  }
+  .allergen-body.open { grid-template-rows: 1fr; }
+  .allergen-body-inner { overflow: hidden; }
+  .allergen-grid {
+    display: flex; flex-wrap: wrap; gap: 8px 20px; padding-bottom: 18px;
+    font-size: .84rem; color: var(--ink-secondary);
+  }
+  .allergen-item { display: flex; align-items: center; gap: 5px; }
+  .alg-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 19px; height: 19px; border-radius: 50%;
+    background: var(--primary-light); color: var(--primary);
+    font-size: .72rem; font-weight: 700; flex-shrink: 0;
+  }
+
+  /* ── Category nav ── */
+  .cat-nav-wrap {
+    position: sticky; top: 64px; z-index: 90;
+    background: oklch(91% 0.018 78 / 0.97);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+  .cat-nav {
+    max-width: 1100px; margin: 0 auto;
+    display: flex; gap: 4px; padding: 10px 24px;
+    overflow-x: auto; scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .cat-nav::-webkit-scrollbar { display: none; }
+  .cat-btn {
+    flex-shrink: 0; scroll-snap-align: start;
+    padding: 7px 14px; border-radius: 20px; border: none;
+    background: transparent; cursor: pointer;
+    font-size: .82rem; font-weight: 600; color: var(--ink-secondary);
+    transition: background 160ms var(--ease-out), color 160ms var(--ease-out),
+                transform 130ms var(--ease-out);
+    white-space: nowrap;
+  }
+  .cat-btn:hover { background: var(--surface-2); color: var(--ink); }
+  .cat-btn:active { transform: scale(0.95); }
+  .cat-btn.active { background: var(--primary); color: var(--primary-ink); }
+
+  /* ── Main content ── */
+  main { max-width: 1100px; margin: 0 auto; padding: 0 24px 80px; }
+
+  /* ── Menu section ── */
+  .menu-section { padding-top: 72px; }
+  .section-header {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 32px; padding-bottom: 16px;
+    border-bottom: 2px solid var(--primary);
+  }
+  .section-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: var(--primary-light); color: var(--primary);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .section-title { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.6rem; color: var(--ink); margin: 0; }
+  .section-note { font-size: .82rem; color: var(--ink-secondary); margin: 4px 0 0; }
+
+  /* ── Subsection ── */
+  .subsection { margin-bottom: 36px; }
+  .subsection-title {
+    font-size: .8rem; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--ink-secondary);
+    padding: 8px 0; margin-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── Menu item ── */
+  .menu-list { display: flex; flex-direction: column; gap: 2px; }
+  .menu-item {
+    display: grid; grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    gap: 2px 12px; padding: 12px 14px; border-radius: var(--radius);
+    background: var(--surface);
+    transition: background 160ms var(--ease-out);
+  }
+  .menu-item:hover { background: var(--surface-2); }
+  .item-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; grid-column: 1; }
+  .item-name { font-weight: 600; font-size: .95rem; color: var(--ink); }
+  .item-allergens { display: flex; gap: 3px; flex-wrap: wrap; }
+  .item-price {
+    grid-column: 2; grid-row: 1;
+    font-weight: 700; font-size: .95rem; color: var(--primary);
+    white-space: nowrap; align-self: start; padding-top: 1px;
+  }
+  .item-desc {
+    grid-column: 1 / -1; font-size: .83rem; color: var(--ink-secondary);
+    margin: 0; line-height: 1.5;
+  }
+
+  /* ── Drink table ── */
+  .drink-table { width: 100%; border-collapse: collapse; }
+  .drink-table th {
+    text-align: right; font-size: .75rem; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--ink-secondary);
+    padding: 6px 10px 10px; border-bottom: 1px solid var(--border);
+  }
+  .drink-table th:first-child { text-align: left; }
+  .drink-table td {
+    padding: 10px 10px; font-size: .9rem; border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  .drink-table td:first-child { font-weight: 500; color: var(--ink); }
+  .drink-table td:not(:first-child) {
+    text-align: right; font-weight: 600; color: var(--primary);
+    white-space: nowrap;
+  }
+  .drink-table td small { display: block; font-size: .78rem; color: var(--ink-secondary); font-weight: 400; }
+  .drink-table tr:last-child td { border-bottom: none; }
+  .drink-table tbody tr:hover td { background: var(--surface); }
+
+  /* ── Info bar ── */
+  .info-bar {
+    background: var(--espresso); color: var(--on-espresso-dim);
+    padding: 20px 24px; margin-top: 80px;
+    display: flex; flex-wrap: wrap; gap: 6px 24px;
+    justify-content: center; align-items: center;
+    font-size: .84rem;
+  }
+  .info-bar strong { color: var(--on-espresso); }
+  .info-dot::before { content: "·"; margin-right: 6px; opacity: .4; }
+
+  /* ── Footer ── */
+  footer {
+    background: var(--espresso-2); color: var(--on-espresso-dim);
+    text-align: center; padding: 24px; font-size: .82rem;
+  }
+  footer a { color: var(--primary); }
+
+  /* ── Sofőr menü special layout ── */
+  .sofor-item {
+    padding: 14px 16px; border-radius: var(--radius);
+    background: var(--surface); margin-bottom: 6px;
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
+    transition: background 160ms var(--ease-out);
+  }
+  .sofor-item:hover { background: var(--surface-2); }
+  .sofor-desc { font-size: .9rem; color: var(--ink); flex: 1; }
+  .sofor-desc small { display: block; font-size: .8rem; color: var(--ink-secondary); margin-top: 3px; }
+  .sofor-price { font-weight: 700; color: var(--primary); white-space: nowrap; }
+
+  /* ── Scrollspy highlight ── */
+  @media (max-width: 640px) {
+    .menu-hero { padding: 48px 20px 40px; }
+    main { padding: 0 16px 64px; }
+    .cat-nav { padding: 8px 16px; }
+    .drink-table { font-size: .82rem; }
+    .drink-table td, .drink-table th { padding: 8px 6px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: 0ms !important; }
+  }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Ugrás a tartalomhoz</a>
+
+<!-- Header -->
+<header>
+  <div class="nav-wrap">
+    <a href="index.html" class="logo">Texas&nbsp;<strong>Csávoly</strong></a>
+    <a href="index.html" class="back-link" aria-label="Vissza a főoldalra">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M15 18l-6-6 6-6"/>
+      </svg>
+      Főoldal
+    </a>
+  </div>
+</header>
+
+<!-- Hero band -->
+<div class="menu-hero">
+  <span class="eyebrow">Texas Csávoly · Csávoly</span>
+  <h1>Étlap &amp; Itallap</h1>
+  <p>Az árak köret nélkül értendők. Zóna adag: az ár 70%-a. Csomagolás: 200&nbsp;Ft/db.</p>
+</div>
+
+<!-- Allergen legend -->
+<div class="allergen-wrap" id="allergének">
+  <div class="allergen-inner">
+    <button class="allergen-toggle" aria-expanded="false" aria-controls="allergen-body" id="allergen-trigger">
+      <span>Allergén tájékoztató</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M6 9l6 6 6-6"/>
+      </svg>
+    </button>
+    <div class="allergen-body" id="allergen-body" role="region" aria-labelledby="allergen-trigger">
+      <div class="allergen-body-inner">
+        <div class="allergen-grid">
+          <span class="allergen-item"><span class="alg-badge">①</span> Glutén</span>
+          <span class="allergen-item"><span class="alg-badge">②</span> Tojás</span>
+          <span class="allergen-item"><span class="alg-badge">③</span> Földimogyoró</span>
+          <span class="allergen-item"><span class="alg-badge">④</span> Szójabab</span>
+          <span class="allergen-item"><span class="alg-badge">⑤</span> Tej</span>
+          <span class="allergen-item"><span class="alg-badge">⑥</span> Diófélék</span>
+          <span class="allergen-item"><span class="alg-badge">⑦</span> Zeller</span>
+          <span class="allergen-item"><span class="alg-badge">⑧</span> Mustár</span>
+          <span class="allergen-item"><span class="alg-badge">⑨</span> Szezámmag</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Category nav -->
+<nav class="cat-nav-wrap" aria-label="Kategóriák">
+  <div class="cat-nav" role="list">
+    <button class="cat-btn active" role="listitem" data-target="levesek">Levesek</button>
+    <button class="cat-btn" role="listitem" data-target="konnyuetelek">Könnyű ételek</button>
+    <button class="cat-btn" role="listitem" data-target="szarnyasok">Szárnyas</button>
+    <button class="cat-btn" role="listitem" data-target="sertes">Sertés</button>
+    <button class="cat-btn" role="listitem" data-target="steakek">Steakek</button>
+    <button class="cat-btn" role="listitem" data-target="talak">Tálak</button>
+    <button class="cat-btn" role="listitem" data-target="salatak">Saláták</button>
+    <button class="cat-btn" role="listitem" data-target="koretek">Köretek</button>
+    <button class="cat-btn" role="listitem" data-target="desszertek">Desszertek</button>
+    <button class="cat-btn" role="listitem" data-target="pizzak">Pizzák</button>
+    <button class="cat-btn" role="listitem" data-target="hamburger">Hamburger</button>
+    <button class="cat-btn" role="listitem" data-target="soformal">Sofőr menü</button>
+    <button class="cat-btn" role="listitem" data-target="borlap">Borok</button>
+    <button class="cat-btn" role="listitem" data-target="sorok">Sörök</button>
+    <button class="cat-btn" role="listitem" data-target="aperitif">Aperitif</button>
+    <button class="cat-btn" role="listitem" data-target="pezsgo">Pezsgők</button>
+    <button class="cat-btn" role="listitem" data-target="kavek">Kávék</button>
+    <button class="cat-btn" role="listitem" data-target="uditok">Üdítők</button>
+  </div>
+</nav>
+
+<!-- Main content -->
+<main id="main-content">
+
+  <!-- LEVESEK -->
+  <section class="menu-section" id="levesek" aria-labelledby="h-levesek">
+    <div class="section-header">
+      <div class="section-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a9.96 9.96 0 0 1 6.29 2.23"/><path d="M3.5 9H20.5"/><path d="M5 9c.5 5 3 8 7 8s6.5-3 7-8"/><path d="M12 17v5"/><path d="M8 22h8"/></svg>
+      </div>
+      <div>
+        <h2 class="section-title" id="h-levesek">Levesek &amp; Készételek</h2>
+      </div>
+    </div>
+    <div class="subsection">
+      <div class="subsection-title">Levesek</div>
+      <div class="menu-list">
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Erőleves metélttel</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">⑦</span></span></div>
+          <span class="item-price">1 500 Ft</span>
+          <p class="item-desc">Tiszta húsleves cérnametélttel</p>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Erőleves tojással</span><span class="item-allergens"><span class="alg-badge">②</span><span class="alg-badge">⑦</span></span></div>
+          <span class="item-price">1 500 Ft</span>
+          <p class="item-desc">Tiszta húsleves tojással</p>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Erőleves daragaluskával</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">⑦</span></span></div>
+          <span class="item-price">1 500 Ft</span>
+          <p class="item-desc">Tiszta húsleves daragaluskával</p>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Erőleves májgombóccal</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">⑦</span></span></div>
+          <span class="item-price">1 700 Ft</span>
+          <p class="item-desc">Tiszta húsleves májgombóccal</p>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Gyümölcsleves</span></div>
+          <span class="item-price">1 700 Ft</span>
+          <p class="item-desc">Idényjellegű gyümölcsleves</p>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Babgulyás</span><span class="item-allergens"><span class="alg-badge">①</span></span></div>
+          <span class="item-price">2 000 Ft</span>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Chilisbab</span><span class="item-allergens"><span class="alg-badge">①</span></span></div>
+          <span class="item-price">2 300 Ft</span>
+        </div>
+      </div>
+    </div>
+    <div class="subsection">
+      <div class="subsection-title">Készételek</div>
+      <div class="menu-list">
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Pacalpörkölt</span></div>
+          <span class="item-price">3 000 Ft</span>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Pacalpörkölt köretes</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span></span></div>
+          <span class="item-price">3 500 Ft</span>
+          <p class="item-desc">Nokedlivel vagy főtt burgonyával</p>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Marhapörkölt nokedlivel</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span></span></div>
+          <span class="item-price">3 500 Ft</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KÖNNYŰ ÉTELEK -->
+  <section class="menu-section" id="konnyuetelek" aria-labelledby="h-konnyuetelek">
+    <div class="section-header">
+      <div class="section-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+      </div>
+      <div><h2 class="section-title" id="h-konnyuetelek">Könnyű ételek</h2></div>
+    </div>
+    <div class="menu-list">
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Rántott gomba tartármártással</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">⑤</span></span></div>
+        <span class="item-price">2 600 Ft</span>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Rántott karfiol tartármártással</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">⑤</span></span></div>
+        <span class="item-price">2 600 Ft</span>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Rántott sajt tartármártással</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">⑤</span></span></div>
+        <span class="item-price">3 000 Ft</span>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Baconbe göngyölt sajt rántva</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">⑤</span></span></div>
+        <span class="item-price">3 200 Ft</span>
+        <p class="item-desc">Tartármártással</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Cézár saláta</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">⑤</span></span></div>
+        <span class="item-price">3 700 Ft</span>
+        <p class="item-desc">Grillezett csirkemellcsíkok, jégsaláta, paradicsom, pirított crouton, fokhagymás-majonézes öntet, sajt</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Joker saláta</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">⑤</span></span></div>
+        <span class="item-price">3 800 Ft</span>
+        <p class="item-desc">Csirkemellcsíkok, paradicsom, paprika, zöldsaláták, uborka, lilahagyma, sült bacon, pirított crouton, joghurtos-majonézes öntet, sajt</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Ropogós csirkecomb salátával</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">⑤</span><span class="alg-badge">⑧</span></span></div>
+        <span class="item-price">4 500 Ft</span>
+        <p class="item-desc">Pácolt filézett csirkecomb rántva, zöldsaláták, paradicsom, paprika, uborka, kapros-joghurtos öntet</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Gyros-tál</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">⑤</span></span></div>
+        <span class="item-price">4 500 Ft</span>
+        <p class="item-desc">Csirkemell gyros, görög saláta, sült burgonya, zöldfűszeres mártogató</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SZÁRNYAS -->
+  <section class="menu-section" id="szarnyasok" aria-labelledby="h-szarnyasok">
+    <div class="section-header">
+      <div class="section-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </div>
+      <div>
+        <h2 class="section-title" id="h-szarnyasok">Szárnyas finomságok</h2>
+        <p class="section-note">Az árak köret nélkül értendők.</p>
+      </div>
+    </div>
+    <div class="subsection">
+      <div class="subsection-title">Grillezett csirkecombfilé</div>
+      <div class="menu-list">
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Csirkecombfilé grillezett zöldséggel</span><span class="item-allergens"><span class="alg-badge">⑤</span><span class="alg-badge">⑧</span></span></div>
+          <span class="item-price">3 800 Ft</span>
+          <p class="item-desc">Pácolt grillezett filézett csirkecomb, grillezett zöldség feltét, zöldfűszeres mártogató</p>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Csirkecombfilé paprikásan</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">⑤</span></span></div>
+          <span class="item-price">3 800 Ft</span>
+          <p class="item-desc">Pácolt grillezett csirkecomb, sült paprika, sült hagyma, csípős-ketchupos mártogató</p>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Csirkecombfilé baconnel, gombával</span><span class="item-allergens"><span class="alg-badge">⑤</span><span class="alg-badge">⑧</span></span></div>
+          <span class="item-price">3 800 Ft</span>
+          <p class="item-desc">Pácolt grillezett csirkecomb, bacon, hagymás gomba, sajt rágrillezve, zöldfűszeres mártogató</p>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Csirkecombfilé mediterrán</span><span class="item-allergens"><span class="alg-badge">⑤</span></span></div>
+          <span class="item-price">3 800 Ft</span>
+          <p class="item-desc">Pácolt grillezett csirkecomb, sült paradicsom, sült sonka, mozzarella, feta sajt rágrillezve, pesto, ruccola, csípős-ketchupos mártogató</p>
+        </div>
+      </div>
+    </div>
+    <div class="subsection">
+      <div class="subsection-title">Grillezett csirkemell</div>
+      <div class="menu-list">
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Natúr csirkemell fűszervajjal</span><span class="item-allergens"><span class="alg-badge">⑤</span><span class="alg-badge">⑧</span></span></div>
+          <span class="item-price">3 500 Ft</span>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Csirkemell tejszínes gombás szósszal</span><span class="item-allergens"><span class="alg-badge">⑤</span></span></div>
+          <span class="item-price">3 900 Ft</span>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Csirkemell ananászos, fahéjas szósszal</span><span class="item-allergens"><span class="alg-badge">⑤</span></span></div>
+          <span class="item-price">3 900 Ft</span>
+          <p class="item-desc">Tejszínes, ananászos, fahéjas szósszal</p>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Csirkemell fokhagymás-tejfölös szósszal</span><span class="item-allergens"><span class="alg-badge">⑤</span></span></div>
+          <span class="item-price">3 900 Ft</span>
+          <p class="item-desc">Csípős fokhagymás-tejfölös szósszal</p>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Csirkemell kukoricával, sajttal</span><span class="item-allergens"><span class="alg-badge">⑤</span></span></div>
+          <span class="item-price">3 900 Ft</span>
+          <p class="item-desc">Grillezett csirkemell, kukorica, sajt rágrillezve</p>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Csirkemell tejföllel, sajttal</span><span class="item-allergens"><span class="alg-badge">⑤</span></span></div>
+          <span class="item-price">3 900 Ft</span>
+          <p class="item-desc">Grillezett csirkemell, tejföl, sajt rágrillezve</p>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Csirkemell hagymás csirkemájjal, baconnel</span></div>
+          <span class="item-price">4 000 Ft</span>
+          <p class="item-desc">Grillezett csirkemell, rostonsült hagymás csirkemáj, sült bacon</p>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Csirkemell paradicsommal, fetával</span><span class="item-allergens"><span class="alg-badge">⑤</span></span></div>
+          <span class="item-price">4 000 Ft</span>
+          <p class="item-desc">Grillezett csirkemell, sült paradicsom, sült cukkini, olívabogyó, feta sajt</p>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Csirkemell gombával, baconnel, tükörtojással</span><span class="item-allergens"><span class="alg-badge">②</span></span></div>
+          <span class="item-price">4 000 Ft</span>
+          <p class="item-desc">Grillezett csirkemell, hagymás gomba, sült bacon, tükörtojás</p>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Töltött csirkemell rántva</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">⑤</span></span></div>
+          <span class="item-price">4 300 Ft</span>
+          <p class="item-desc">Csirkemell sajttal, gombával töltve, rántva</p>
+        </div>
+      </div>
+    </div>
+    <div class="subsection">
+      <div class="subsection-title">Mártogatók</div>
+      <div class="menu-list">
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Csípős ketchupos</span><span class="item-allergens"><span class="alg-badge">⑤</span></span></div>
+          <span class="item-price">900 Ft</span>
+          <p class="item-desc">Majonéz, ketchup, chili, fokhagyma</p>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Zöldfűszeres</span><span class="item-allergens"><span class="alg-badge">⑤</span></span></div>
+          <span class="item-price">900 Ft</span>
+          <p class="item-desc">Joghurt, fokhagyma, zöldfűszerek</p>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Kapros-joghurtos</span><span class="item-allergens"><span class="alg-badge">⑤</span></span></div>
+          <span class="item-price">900 Ft</span>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Apacs</span><span class="item-allergens"><span class="alg-badge">⑤</span></span></div>
+          <span class="item-price">900 Ft</span>
+          <p class="item-desc">Erős paprika, tejföl, joghurt, fokhagyma, zöldfűszerek</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERTÉS -->
+  <section class="menu-section" id="sertes" aria-labelledby="h-sertes">
+    <div class="section-header">
+      <div class="section-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+      </div>
+      <div>
+        <h2 class="section-title" id="h-sertes">Frissensültek sertésből</h2>
+        <p class="section-note">Az árak köret nélkül értendők.</p>
+      </div>
+    </div>
+    <div class="menu-list">
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Wiener Schnitzel sertéskarajból</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span></span></div>
+        <span class="item-price">4 200 Ft</span>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Grillezett tarja fokhagymásan</span><span class="item-allergens"><span class="alg-badge">②</span></span></div>
+        <span class="item-price">4 300 Ft</span>
+        <p class="item-desc">Grillezett sertéstarja fokhagymásan, sült bacon, tükörtojás</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Grillezett tarja paradicsomos burgonyával</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span></span></div>
+        <span class="item-price">5 300 Ft</span>
+        <p class="item-desc">Grillezett sertéstarja fokhagymásan, sült bacon, tükörtojás, paradicsomos-fokhagymás sült burgonyával</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Grillezett tarja tejfölös szósszal</span><span class="item-allergens"><span class="alg-badge">⑤</span></span></div>
+        <span class="item-price">4 300 Ft</span>
+        <p class="item-desc">Grillezett sertéstarja, csípős fokhagymás-tejfölös szósz, sajt rágrillezve</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Grillezett tarja gombával, baconnel</span><span class="item-allergens"><span class="alg-badge">②</span></span></div>
+        <span class="item-price">4 300 Ft</span>
+        <p class="item-desc">Grillezett sertéstarja, sült gomba, sült bacon, tükörtojás</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Töltött sertéskaraj rántva (sajt, sonka)</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">⑤</span></span></div>
+        <span class="item-price">4 400 Ft</span>
+        <p class="item-desc">Sertéskaraj sajttal, sonkával töltve, rántva</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Töltött sertéskaraj rántva (csirkemáj)</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span></span></div>
+        <span class="item-price">4 400 Ft</span>
+        <p class="item-desc">Sertéskaraj hagymás csirkemájjal töltve, rántva</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEAKEK -->
+  <section class="menu-section" id="steakek" aria-labelledby="h-steakek">
+    <div class="section-header">
+      <div class="section-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      </div>
+      <div>
+        <h2 class="section-title" id="h-steakek">Steakek</h2>
+        <p class="section-note">Marha hátszín steak — az árak köret nélkül értendők.</p>
+      </div>
+    </div>
+    <div class="menu-list">
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Steak mustáros fűszervajjal</span><span class="item-allergens"><span class="alg-badge">⑤</span><span class="alg-badge">⑧</span></span></div>
+        <span class="item-price">5 000 Ft</span>
+        <p class="item-desc">Zöldfűszeres (kakukkfű, rozmaring, petrezselyem) mustáros fűszervajjal</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Steak fokhagymás-tejfölös szósszal</span><span class="item-allergens"><span class="alg-badge">⑤</span><span class="alg-badge">⑧</span></span></div>
+        <span class="item-price">5 800 Ft</span>
+        <p class="item-desc">Csípős fokhagymás-tejfölös szósz, sajt rágrillezve</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Steak gombás szósszal</span><span class="item-allergens"><span class="alg-badge">⑤</span><span class="alg-badge">⑧</span></span></div>
+        <span class="item-price">5 800 Ft</span>
+        <p class="item-desc">Tejszínes-gombás szósszal</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Steak bacon-paprika raguval</span><span class="item-allergens"><span class="alg-badge">⑧</span></span></div>
+        <span class="item-price">5 800 Ft</span>
+        <p class="item-desc">Bacon, színes paprikacsíkok, kukorica, ketchupos-mézes-boros ragu</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Steak gombával, baconnel, tükörtojással</span><span class="item-allergens"><span class="alg-badge">②</span><span class="alg-badge">⑧</span></span></div>
+        <span class="item-price">5 800 Ft</span>
+        <p class="item-desc">Hagymás gomba, sült bacon, tükörtojás</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Steak grillezett zöldséggel, fetával</span><span class="item-allergens"><span class="alg-badge">⑤</span><span class="alg-badge">⑧</span></span></div>
+        <span class="item-price">5 800 Ft</span>
+        <p class="item-desc">Grillezett zöldség feltét, feta sajt</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Steak gombás omletttel</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">⑧</span></span></div>
+        <span class="item-price">5 950 Ft</span>
+        <p class="item-desc">Gombás omlett, sült hagyma</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Steak gombával, baconnel, sajttal</span><span class="item-allergens"><span class="alg-badge">⑤</span><span class="alg-badge">⑧</span></span></div>
+        <span class="item-price">5 950 Ft</span>
+        <p class="item-desc">Hagymás gomba, sült bacon, sajt rágrillezve</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Steak paradicsomos babbal</span><span class="item-allergens"><span class="alg-badge">⑤</span><span class="alg-badge">⑧</span></span></div>
+        <span class="item-price">5 950 Ft</span>
+        <p class="item-desc">Paradicsomos-hagymás babbal, tejföllel</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Marha hátszíncsíkok chilis raguval</span><span class="item-allergens"><span class="alg-badge">⑧</span></span></div>
+        <span class="item-price">5 950 Ft</span>
+        <p class="item-desc">Paprika-paradicsom-vöröshagyma-chili raguval</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TÁLAK -->
+  <section class="menu-section" id="talak" aria-labelledby="h-talak">
+    <div class="section-header">
+      <div class="section-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+      </div>
+      <div><h2 class="section-title" id="h-talak">Többszemélyes tálak</h2></div>
+    </div>
+    <div class="subsection">
+      <div class="subsection-title">1 személyes</div>
+      <div class="menu-list">
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Texas Tál</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">⑤</span><span class="alg-badge">⑧</span></span></div>
+          <span class="item-price">6 000 Ft</span>
+          <p class="item-desc">Marha hátszín steak, grillezett csirkecombfilé, grillezett sertéstarja, grillezett zöldségek, steak burgonya, csípős-ketchupos mártogató</p>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Farmeri Tál</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">⑤</span><span class="alg-badge">⑧</span></span></div>
+          <span class="item-price">6 200 Ft</span>
+          <p class="item-desc">Marha hátszín steak, grillezett csirkecombfilé, grillezett sertéstarja, tükörtojás, friss zöldség ágy (paprika, paradicsom, uborka, lilahagyma, jégsaláta), sült burgonya, zöldfűszeres mártogató</p>
+        </div>
+      </div>
+    </div>
+    <div class="subsection">
+      <div class="subsection-title">2 személyes</div>
+      <div class="menu-list">
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Vegán Tál</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">⑤</span></span></div>
+          <span class="item-price">10 500 Ft</span>
+          <p class="item-desc">Rántott gomba, rántott karfiol, rántott sajt, édesburgonya, grillezett zöldség, rizibizi, tartármártás</p>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Baromfi Tál</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">⑤</span><span class="alg-badge">⑧</span></span></div>
+          <span class="item-price">10 500 Ft</span>
+          <p class="item-desc">Natúr csirkemell tejszínes-gombás szósszal; sertéskaraj hagymás csirkemájjal töltve, rántva; grillezett csirkecombfilé sült hagymával; sült burgonya, rizibizi</p>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Cowboy Tál</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">⑧</span></span></div>
+          <span class="item-price">10 500 Ft</span>
+          <p class="item-desc">Pácolt filézett csirkecomb rántva, grillezett sertéstarja hagymás csirkemájjal baconnel; rántott karfiol, steak burgonya, rizibizi</p>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Rodeó Tál</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">⑤</span></span></div>
+          <span class="item-price">10 500 Ft</span>
+          <p class="item-desc">Sonkával-sajttal töltött sertéskaraj rántva; grillezett csirkemell grillezett zöldségekkel; grillezett tarja csípős fokhagymás-tejfölös szósszal, sajt rágrillezve; sült burgonya, rizibizi</p>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Texasi Tál</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">⑤</span><span class="alg-badge">⑧</span></span></div>
+          <span class="item-price">10 500 Ft</span>
+          <p class="item-desc">Pácolt grillezett csirkecombfilé baconnel, hagymás gombával, sajt rágrillezve; marha hátszín steak zöldfűszeres-mustáros fűszervajjal; rántott gomba, hasábburgonya, steak burgonya</p>
+        </div>
+      </div>
+    </div>
+    <div class="subsection">
+      <div class="subsection-title">3 személyes</div>
+      <div class="menu-list">
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Texas Grand Tál</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">⑤</span><span class="alg-badge">⑧</span></span></div>
+          <span class="item-price">15 800 Ft</span>
+          <p class="item-desc">Marha hátszín steak hagymás gombával, sült baconnel, sajt rágrillezve; csirkecombfilé grillezett zöldségekkel; rántott sajt; sült burgonya korong, rizibizi</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SALÁTÁK -->
+  <section class="menu-section" id="salatak" aria-labelledby="h-salatak">
+    <div class="section-header">
+      <div class="section-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 8c0 4.4-3.6 8-8 8"/></svg>
+      </div>
+      <div><h2 class="section-title" id="h-salatak">Saláták</h2></div>
+    </div>
+    <div class="subsection">
+      <div class="subsection-title">Egyszerű saláták</div>
+      <div class="menu-list">
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Káposztasaláta</span></div>
+          <span class="item-price">1 200 Ft</span>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Csemegeuborka</span></div>
+          <span class="item-price">1 200 Ft</span>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Almapaprika</span></div>
+          <span class="item-price">1 300 Ft</span>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Uborkasaláta</span></div>
+          <span class="item-price">1 500 Ft</span>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Tejfölös / kapros-tejfölös uborkasaláta</span><span class="item-allergens"><span class="alg-badge">⑤</span></span></div>
+          <span class="item-price">1 600 Ft</span>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Paradicsomsaláta</span></div>
+          <span class="item-price">1 900 Ft</span>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Magyar saláta</span></div>
+          <span class="item-price">1 900 Ft</span>
+          <p class="item-desc">Paradicsom, káposzta, uborkasaláta egy tányéron</p>
+        </div>
+      </div>
+    </div>
+    <div class="subsection">
+      <div class="subsection-title">Különleges saláták</div>
+      <div class="menu-list">
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Görög saláta</span><span class="item-allergens"><span class="alg-badge">⑤</span></span></div>
+          <span class="item-price">2 100 Ft</span>
+          <p class="item-desc">Paradicsom, paprika, uborka, lilahagyma, oregánó, feta sajt, görög fűszeres olívaolajos öntettel</p>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Kevert saláta gazdagon</span><span class="item-allergens"><span class="alg-badge">⑤</span></span></div>
+          <span class="item-price">2 100 Ft</span>
+          <p class="item-desc">Paprika, uborka, paradicsom, lilahagyma, majonézes-tejfölös-citromos öntettel</p>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Tünde saláta</span><span class="item-allergens"><span class="alg-badge">⑤</span></span></div>
+          <span class="item-price">2 200 Ft</span>
+          <p class="item-desc">Paradicsom, mozzarella, ruccola, bazsalikom, citromos-olívaolajos öntettel</p>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Cézár saláta</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">⑤</span></span></div>
+          <span class="item-price">2 400 Ft</span>
+          <p class="item-desc">Jégsaláta, paradicsom, pirított crouton kockák, fokhagymás-majonézes öntet, reszelt sajt</p>
+        </div>
+        <div class="menu-item">
+          <div class="item-top"><span class="item-name">Ropogós saláta</span><span class="item-allergens"><span class="alg-badge">⑤</span></span></div>
+          <span class="item-price">2 400 Ft</span>
+          <p class="item-desc">Többféle zöldsaláta, paradicsom, paprika, uborka, kapros-joghurtos öntettel</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KÖRETEK -->
+  <section class="menu-section" id="koretek" aria-labelledby="h-koretek">
+    <div class="section-header">
+      <div class="section-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+      </div>
+      <div><h2 class="section-title" id="h-koretek">Köretek</h2></div>
+    </div>
+    <div class="menu-list">
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Hasábburgonya</span><span class="item-allergens"><span class="alg-badge">①</span></span></div>
+        <span class="item-price">1 200 Ft</span>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Pirított főtt burgonya petrezselyemmel</span></div>
+        <span class="item-price">1 200 Ft</span>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Pirított főtt burgonya hagymával</span></div>
+        <span class="item-price">1 400 Ft</span>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Csónakburgonya</span><span class="item-allergens"><span class="alg-badge">①</span></span></div>
+        <span class="item-price">1 400 Ft</span>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Sült burgonya korong</span><span class="item-allergens"><span class="alg-badge">①</span></span></div>
+        <span class="item-price">1 500 Ft</span>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Steak burgonya</span><span class="item-allergens"><span class="alg-badge">①</span></span></div>
+        <span class="item-price">1 600 Ft</span>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Sült édesburgonya hasáb</span><span class="item-allergens"><span class="alg-badge">①</span></span></div>
+        <span class="item-price">1 800 Ft</span>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Pirított burgonya hagymával, szalonnával</span></div>
+        <span class="item-price">1 800 Ft</span>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Rizs</span></div>
+        <span class="item-price">1 200 Ft</span>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Rizibizi</span></div>
+        <span class="item-price">1 300 Ft</span>
+        <p class="item-desc">Rizs zöldborsóval</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Kukoricás rizs</span></div>
+        <span class="item-price">1 300 Ft</span>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Gombás rizs</span></div>
+        <span class="item-price">1 400 Ft</span>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Grillezett zöldségköret</span></div>
+        <span class="item-price">1 900 Ft</span>
+        <p class="item-desc">Cukkini, hagyma, paprika, gomba, bébirépa</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DESSZERTEK -->
+  <section class="menu-section" id="desszertek" aria-labelledby="h-desszertek">
+    <div class="section-header">
+      <div class="section-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 0 1 10 10c0 5.52-4.48 10-10 10S2 17.52 2 12"/><path d="M12 6v6l4 2"/></svg>
+      </div>
+      <div>
+        <h2 class="section-title" id="h-desszertek">Desszertek</h2>
+        <p class="section-note">Palacsinta: 1 adag = 2 darab</p>
+      </div>
+    </div>
+    <div class="menu-list">
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Fahéjas palacsinta</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">⑤</span></span></div>
+        <span class="item-price">1 300 Ft</span>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Kakaós palacsinta</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">⑤</span></span></div>
+        <span class="item-price">1 300 Ft</span>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Ízes palacsinta (sárgabarack)</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">⑤</span></span></div>
+        <span class="item-price">1 400 Ft</span>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Nutellás palacsinta</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">③</span><span class="alg-badge">④</span><span class="alg-badge">⑤</span><span class="alg-badge">⑥</span></span></div>
+        <span class="item-price">1 700 Ft</span>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Túrós palacsinta</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">⑤</span></span></div>
+        <span class="item-price">1 800 Ft</span>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Gundel palacsinta csoki öntettel</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">③</span><span class="alg-badge">④</span><span class="alg-badge">⑤</span><span class="alg-badge">⑥</span></span></div>
+        <span class="item-price">2 100 Ft</span>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Gesztenyés palacsinta vanília öntettel</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">⑤</span></span></div>
+        <span class="item-price">2 100 Ft</span>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Burgenlandi palacsinta őszibarackkal</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">⑤</span></span></div>
+        <span class="item-price">2 200 Ft</span>
+        <p class="item-desc">Őszibarackkal töltve, vanília öntettel</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Túrós palacsinta cukros tejfölössel</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">⑤</span></span></div>
+        <span class="item-price">2 300 Ft</span>
+        <p class="item-desc">Túrós töltelék, cukros tejfölös öntet</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Málnás palacsinta vanília öntettel</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">⑤</span></span></div>
+        <span class="item-price">2 300 Ft</span>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Gesztenye püré</span><span class="item-allergens"><span class="alg-badge">⑤</span></span></div>
+        <span class="item-price">2 400 Ft</span>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Somlói galuska</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">⑤</span><span class="alg-badge">⑥</span></span></div>
+        <span class="item-price">2 500 Ft</span>
+        <p class="item-desc">Natúr és kakaós piskóta, vaníliakrém, csokiöntet, mazsola, tejszínhab, dió</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PIZZÁK -->
+  <section class="menu-section" id="pizzak" aria-labelledby="h-pizzak">
+    <div class="section-header">
+      <div class="section-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M12 6v6l4 2"/></svg>
+      </div>
+      <div><h2 class="section-title" id="h-pizzak">Pizzák</h2></div>
+    </div>
+    <div class="menu-list">
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Sonkás</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">⑤</span></span></div>
+        <span class="item-price">2 300 Ft</span>
+        <p class="item-desc">Sonka, sajt</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Sonkás-gombás</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">⑤</span></span></div>
+        <span class="item-price">2 400 Ft</span>
+        <p class="item-desc">Sonka, gomba, kukorica, sajt</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Capri</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">⑤</span></span></div>
+        <span class="item-price">2 500 Ft</span>
+        <p class="item-desc">Mozzarella, paradicsom, lilahagyma, oregánó, bazsalikom, sajt</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Görög</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">⑤</span></span></div>
+        <span class="item-price">2 800 Ft</span>
+        <p class="item-desc">Sonka, paradicsom, fokhagyma, oregánó, olívabogyó, mozzarella, feta, sajt</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Tejfölös bacon</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">⑤</span></span></div>
+        <span class="item-price">2 800 Ft</span>
+        <p class="item-desc">Tejfölös alap, bacon, paradicsom, kukorica, mozzarella, feta, sajt</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Hawaii</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">⑤</span></span></div>
+        <span class="item-price">2 800 Ft</span>
+        <p class="item-desc">Sonka, ananász, sajt</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Csirke</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">⑤</span></span></div>
+        <span class="item-price">2 800 Ft</span>
+        <p class="item-desc">Csirkemell csíkok, paprika, kukorica, paradicsom, sajt</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Cowboy</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">⑤</span></span></div>
+        <span class="item-price">2 800 Ft</span>
+        <p class="item-desc">Bacon, sonka, kukorica, paradicsom, paprika, jalapeno, sajt</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Tejfölös-jalapeñós</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">⑤</span></span></div>
+        <span class="item-price">2 800 Ft</span>
+        <p class="item-desc">Csípős fokhagymás-tejfölös szósz, bacon, sonka, lilahagyma, jalapeno, sajt</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Ruccolás</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">⑤</span></span></div>
+        <span class="item-price">2 800 Ft</span>
+        <p class="item-desc">Mozzarella, paradicsom, sonka, bazsalikom, ruccola, sajt</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Bolognai</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">⑤</span></span></div>
+        <span class="item-price">2 950 Ft</span>
+        <p class="item-desc">Bolognai szósz, tejföl, sajt</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Kolbászos</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">⑤</span></span></div>
+        <span class="item-price">2 950 Ft</span>
+        <p class="item-desc">Paradicsom, paprika, lilahagyma, kolbász, szalonna, sajt</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Texas Special</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">⑤</span></span></div>
+        <span class="item-price">3 100 Ft</span>
+        <p class="item-desc">Sonka, bacon, paprika, paradicsom, gomba, lilahagyma, kukorica, főtt tojás, sajt</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HAMBURGER -->
+  <section class="menu-section" id="hamburger" aria-labelledby="h-hamburger">
+    <div class="section-header">
+      <div class="section-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><path d="M3 6h18"/><path d="M3 18h18"/></svg>
+      </div>
+      <div>
+        <h2 class="section-title" id="h-hamburger">Hamburger menü</h2>
+        <p class="section-note">1 adag = 2 db hamburger + sült burgonya</p>
+      </div>
+    </div>
+    <div class="menu-list">
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">BBQ Bacon Burger</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">④</span><span class="alg-badge">⑤</span><span class="alg-badge">⑧</span><span class="alg-badge">⑨</span></span></div>
+        <span class="item-price">3 800 Ft</span>
+        <p class="item-desc">Marha húspogácsa, sajt, saláta, paradicsom, hambiszósz, barbecue szósz, sült hagymakarika, sült bacon</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Klasszikus Burger</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">④</span><span class="alg-badge">⑤</span><span class="alg-badge">⑧</span><span class="alg-badge">⑨</span></span></div>
+        <span class="item-price">3 800 Ft</span>
+        <p class="item-desc">Marha húspogácsa, sajt, saláta, paradicsom, hambiszósz, uborka, lilahagyma, csemege uborka</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-top"><span class="item-name">Mozzarellás Burger</span><span class="item-allergens"><span class="alg-badge">①</span><span class="alg-badge">②</span><span class="alg-badge">④</span><span class="alg-badge">⑤</span><span class="alg-badge">⑧</span><span class="alg-badge">⑨</span></span></div>
+        <span class="item-price">3 800 Ft</span>
+        <p class="item-desc">Marha húspogácsa, saláta, paradicsom, hambiszósz, sült mozzarella, ruccola</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOFŐR MENÜ -->
+  <section class="menu-section" id="soformal" aria-labelledby="h-soformal">
+    <div class="section-header">
+      <div class="section-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+      </div>
+      <div>
+        <h2 class="section-title" id="h-soformal">Sofőr menü</h2>
+        <p class="section-note">Leves + főétel egy áron</p>
+      </div>
+    </div>
+    <div>
+      <div class="sofor-item">
+        <div class="sofor-desc">
+          Erőleves májgombóccal + Rántott sertésszelet, sült burgonya
+          <small>①②</small>
+        </div>
+        <span class="sofor-price">3 800 Ft</span>
+      </div>
+      <div class="sofor-item">
+        <div class="sofor-desc">
+          Erőleves májgombóccal + Tejszínes gombás csirkemell szelet, rizs
+          <small>①②⑤</small>
+        </div>
+        <span class="sofor-price">3 800 Ft</span>
+      </div>
+      <div class="sofor-item">
+        <div class="sofor-desc">
+          Erőleves metélttel + Fokhagymás tarja, petrezselymes burgonya
+          <small>①②</small>
+        </div>
+        <span class="sofor-price">3 800 Ft</span>
+      </div>
+      <div class="sofor-item">
+        <div class="sofor-desc">
+          Babgulyás + Túrós palacsinta
+          <small>①②⑤</small>
+        </div>
+        <span class="sofor-price">3 800 Ft</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- BORLAP -->
+  <section class="menu-section" id="borlap" aria-labelledby="h-borlap">
+    <div class="section-header">
+      <div class="section-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 22h8"/><path d="M12 11v11"/><path d="M17.5 3H6.5L3 8c0 2.5 1.5 4.5 4 5.5"/><path d="M17.5 3c1.5 0 3 1.5 3 5-1.5 1-3 1.5-4 1.5"/></svg>
+      </div>
+      <div><h2 class="section-title" id="h-borlap">Borlap</h2></div>
+    </div>
+    <div class="subsection">
+      <div class="subsection-title">Fehérborok</div>
+      <table class="drink-table">
+        <thead><tr><th>Bor</th><th>Palack</th><th>1 dl</th></tr></thead>
+        <tbody>
+          <tr><td>Maczkó Chardonnay <small>Villányi · száraz</small></td><td>2 800 Ft</td><td>400 Ft</td></tr>
+          <tr><td>Frittmann Irsai Olivér <small>Kunsági · száraz</small></td><td>2 800 Ft</td><td>400 Ft</td></tr>
+          <tr><td>Tornai Zenit <small>Somlói · száraz</small></td><td>2 800 Ft</td><td>400 Ft</td></tr>
+          <tr><td>Frittmann Kunsági Muskotály <small>Kunsági · félédes</small></td><td>2 800 Ft</td><td>400 Ft</td></tr>
+          <tr><td>Szőke Muscat Ottonel <small>Mátrai · félédes</small></td><td>3 100 Ft</td><td>440 Ft</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="subsection">
+      <div class="subsection-title">Rozéborok</div>
+      <table class="drink-table">
+        <thead><tr><th>Bor</th><th>Palack</th><th>1 dl</th></tr></thead>
+        <tbody>
+          <tr><td>Bodri Rosé Rozi <small>Szekszárdi · száraz</small></td><td>3 100 Ft</td><td>440 Ft</td></tr>
+          <tr><td>Lelovits Villányi Rosé <small>Villányi · száraz</small></td><td>3 100 Ft</td><td>440 Ft</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="subsection">
+      <div class="subsection-title">Vörösborok</div>
+      <table class="drink-table">
+        <thead><tr><th>Bor</th><th>Palack</th><th>1 dl</th></tr></thead>
+        <tbody>
+          <tr><td>Teleki Cabernet Sauvignon <small>Villányi · száraz</small></td><td>3 250 Ft</td><td>460 Ft</td></tr>
+          <tr><td>Sike Merlot <small>Egri · édes</small></td><td>3 250 Ft</td><td>460 Ft</td></tr>
+          <tr><td>Takler Kékfrankos <small>Szekszárdi · száraz</small></td><td>3 500 Ft</td><td>480 Ft</td></tr>
+          <tr><td>Schieber Cabernet Franc <small>Szekszárdi · száraz</small></td><td>3 500 Ft</td><td>480 Ft</td></tr>
+          <tr><td>Maczkó Cabernet Sauvignon <small>Villányi · száraz</small></td><td>3 600 Ft</td><td>500 Ft</td></tr>
+          <tr><td>Frittmann Portugieser <small>Kunsági · félédes</small></td><td>3 600 Ft</td><td>500 Ft</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SÖRÖK -->
+  <section class="menu-section" id="sorok" aria-labelledby="h-sorok">
+    <div class="section-header">
+      <div class="section-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 11h1a3 3 0 0 1 0 6h-1"/><path d="M9 12v6"/><path d="M13 12v6"/><path d="M14 7.5c-1 0-1.44.5-3 .5s-2-.5-3-.5-1.44.5-3 .5"/><path d="M3 10a5 5 0 0 1 5-5h8a5 5 0 0 1 5 5v11H3z"/></svg>
+      </div>
+      <div><h2 class="section-title" id="h-sorok">Sörök</h2></div>
+    </div>
+    <div class="subsection">
+      <div class="subsection-title">Csapolt sörök</div>
+      <table class="drink-table">
+        <thead><tr><th>Sör</th><th>Ár</th></tr></thead>
+        <tbody>
+          <tr><td>Heineken <small>0,5 l</small></td><td>1 400 Ft</td></tr>
+          <tr><td>Heineken <small>0,25 l</small></td><td>900 Ft</td></tr>
+          <tr><td>Mort Subite <small>0,4 l</small></td><td>1 600 Ft</td></tr>
+          <tr><td>Mort Subite <small>0,25 l</small></td><td>1 000 Ft</td></tr>
+          <tr><td>Guinness <small>0,5 l</small></td><td>1 800 Ft</td></tr>
+          <tr><td>Guinness <small>0,25 l</small></td><td>1 100 Ft</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="subsection">
+      <div class="subsection-title">Üveges sörök</div>
+      <table class="drink-table">
+        <thead><tr><th>Sör</th><th>Ár</th></tr></thead>
+        <tbody>
+          <tr><td>Heineken <small>0,5 l</small></td><td>800 Ft</td></tr>
+          <tr><td>Coors <small>0,33 l</small></td><td>750 Ft</td></tr>
+          <tr><td>Krusovice <small>0,5 l</small></td><td>800 Ft</td></tr>
+          <tr><td>Soproni <small>0,5 l</small></td><td>650 Ft</td></tr>
+          <tr><td>Gösser <small>0,5 l</small></td><td>800 Ft</td></tr>
+          <tr><td>Stella Artois <small>0,5 l</small></td><td>800 Ft</td></tr>
+          <tr><td>Csíki sör <small>0,5 l</small></td><td>900 Ft</td></tr>
+          <tr><td>Csíki Barna <small>0,5 l</small></td><td>900 Ft</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="subsection">
+      <div class="subsection-title">Alkoholmentes sörök</div>
+      <table class="drink-table">
+        <thead><tr><th>Sör</th><th>Ár</th></tr></thead>
+        <tbody>
+          <tr><td>Heineken 0% <small>0,33 l</small></td><td>800 Ft</td></tr>
+          <tr><td>Stella Artois 0% <small>0,33 l</small></td><td>800 Ft</td></tr>
+          <tr><td>Gösser citromos <small>0,33 l</small></td><td>800 Ft</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- APERITIF -->
+  <section class="menu-section" id="aperitif" aria-labelledby="h-aperitif">
+    <div class="section-header">
+      <div class="section-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 22h8"/><path d="M7 10h10l1-7H6l1 7z"/><path d="M12 10v12"/></svg>
+      </div>
+      <div><h2 class="section-title" id="h-aperitif">Aperitif &amp; Szeszesitalok</h2></div>
+    </div>
+    <table class="drink-table">
+      <thead><tr><th>Ital</th><th>5 cl</th><th>3 cl</th></tr></thead>
+      <tbody>
+        <tr><td>Jim Beam</td><td>1 300 Ft</td><td>850 Ft</td></tr>
+        <tr><td>Johnnie Walker</td><td>1 300 Ft</td><td>850 Ft</td></tr>
+        <tr><td>Jack Daniel's</td><td>1 300 Ft</td><td>850 Ft</td></tr>
+        <tr><td>Jameson</td><td>1 300 Ft</td><td>850 Ft</td></tr>
+        <tr><td>Baileys</td><td>1 300 Ft</td><td>850 Ft</td></tr>
+        <tr><td>Shanky's Whip</td><td>1 300 Ft</td><td>850 Ft</td></tr>
+        <tr><td>Unicum</td><td>1 300 Ft</td><td>850 Ft</td></tr>
+        <tr><td>Unicum szilva</td><td>1 300 Ft</td><td>850 Ft</td></tr>
+        <tr><td>Jägermeister</td><td>1 300 Ft</td><td>850 Ft</td></tr>
+        <tr><td>Becherovka</td><td>1 300 Ft</td><td>850 Ft</td></tr>
+        <tr><td>Ágyas szilva</td><td>1 300 Ft</td><td>850 Ft</td></tr>
+        <tr><td>Ágyas barack</td><td>1 300 Ft</td><td>850 Ft</td></tr>
+        <tr><td>Royal</td><td>1 300 Ft</td><td>850 Ft</td></tr>
+        <tr><td>Metaxa 5 Star</td><td>1 300 Ft</td><td>850 Ft</td></tr>
+        <tr><td>Sierra Tequila Silver</td><td>1 300 Ft</td><td>850 Ft</td></tr>
+        <tr><td>Finsbury Gin</td><td>1 300 Ft</td><td>850 Ft</td></tr>
+        <tr><td>Martini Bianco <small>1 dl</small></td><td colspan="2">1 200 Ft</td></tr>
+        <tr><td>Garrone Cherry <small>1 dl</small></td><td colspan="2">1 000 Ft</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- PEZSGŐK -->
+  <section class="menu-section" id="pezsgo" aria-labelledby="h-pezsgo">
+    <div class="section-header">
+      <div class="section-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v1"/><path d="M18.36 5.64l-.71.71"/><path d="M21 12h-1"/><path d="M18.36 18.36l-.71-.71"/><path d="M12 21v-1"/><path d="M5.64 18.36l.71-.71"/><path d="M3 12h1"/><path d="M5.64 5.64l.71.71"/></svg>
+      </div>
+      <div><h2 class="section-title" id="h-pezsgo">Pezsgők</h2></div>
+    </div>
+    <table class="drink-table">
+      <thead><tr><th>Pezsgő</th><th>Palack</th></tr></thead>
+      <tbody>
+        <tr><td>Törley Charmant <small>édes</small></td><td>2 800 Ft</td></tr>
+        <tr><td>Törley Talisman <small>félszáraz</small></td><td>2 800 Ft</td></tr>
+        <tr><td>Törley Alkoholmentes</td><td>2 800 Ft</td></tr>
+        <tr><td>BB <small>édes</small></td><td>2 800 Ft</td></tr>
+        <tr><td>BB Spumante <small>édes</small></td><td>3 200 Ft</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- KÁVÉK -->
+  <section class="menu-section" id="kavek" aria-labelledby="h-kavek">
+    <div class="section-header">
+      <div class="section-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+      </div>
+      <div><h2 class="section-title" id="h-kavek">Kávék &amp; Meleg italok</h2></div>
+    </div>
+    <table class="drink-table">
+      <thead><tr><th>Ital</th><th>Ár</th></tr></thead>
+      <tbody>
+        <tr><td>Kávé tejszínnel</td><td>800 Ft</td></tr>
+        <tr><td>Kávé tejszínhabbal</td><td>900 Ft</td></tr>
+        <tr><td>Hosszú kávé (lungo)</td><td>900 Ft</td></tr>
+        <tr><td>Cappuccino</td><td>1 100 Ft</td></tr>
+        <tr><td>Jeges kávé</td><td>1 100 Ft</td></tr>
+        <tr><td>Forrócsoki (különböző ízesítéssel)</td><td>1 400 Ft</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ÜDÍTŐK -->
+  <section class="menu-section" id="uditok" aria-labelledby="h-uditok">
+    <div class="section-header">
+      <div class="section-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </div>
+      <div><h2 class="section-title" id="h-uditok">Üdítőitalok</h2></div>
+    </div>
+    <div class="subsection">
+      <div class="subsection-title">Palackos üdítők (0,25 l)</div>
+      <table class="drink-table">
+        <thead><tr><th>Ital</th><th>Ár</th></tr></thead>
+        <tbody>
+          <tr><td>Coca Cola</td><td>800 Ft</td></tr>
+          <tr><td>Pepsi Cola</td><td>800 Ft</td></tr>
+          <tr><td>Coca Cola Zero</td><td>800 Ft</td></tr>
+          <tr><td>Fanta Narancs</td><td>800 Ft</td></tr>
+          <tr><td>Sprite Zero</td><td>800 Ft</td></tr>
+          <tr><td>Kinley Tonic</td><td>800 Ft</td></tr>
+          <tr><td>Kinley Gyömbér</td><td>800 Ft</td></tr>
+          <tr><td>Schweppes Citrus Mix</td><td>800 Ft</td></tr>
+          <tr><td>Fuze Tea Őszibarack</td><td>800 Ft</td></tr>
+          <tr><td>Fuze Tea Citrom</td><td>800 Ft</td></tr>
+          <tr><td>Paradicsomlé <small>0,33 l</small></td><td>800 Ft</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="subsection">
+      <div class="subsection-title">Házi limonádé</div>
+      <table class="drink-table">
+        <thead><tr><th>Ízesítés</th><th>0,3 l</th><th>0,5 l</th></tr></thead>
+        <tbody>
+          <tr><td>Különböző ízesítéssel <small>levendula, citrom, bodza</small></td><td>800 Ft</td><td>1 300 Ft</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="subsection">
+      <div class="subsection-title">Cappy gyümölcslevek</div>
+      <table class="drink-table">
+        <thead><tr><th>Gyümölcslé</th><th>1 dl</th><th>1 l</th></tr></thead>
+        <tbody>
+          <tr><td>Cappy Alma 100%</td><td>260 Ft</td><td>2 000 Ft</td></tr>
+          <tr><td>Cappy Narancs 100%</td><td>260 Ft</td><td>2 000 Ft</td></tr>
+          <tr><td>Cappy Őszibarack 100%</td><td>260 Ft</td><td>2 000 Ft</td></tr>
+          <tr><td>Cappy Körte <small>0,25 l</small></td><td colspan="2">800 Ft</td></tr>
+          <tr><td>Cappy Eper <small>0,25 l</small></td><td colspan="2">800 Ft</td></tr>
+          <tr><td>Cappy Ananász <small>0,25 l</small></td><td colspan="2">800 Ft</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="subsection">
+      <div class="subsection-title">Ásványvíz</div>
+      <table class="drink-table">
+        <thead><tr><th>Víz</th><th>0,33 l</th><th>1,5 l</th></tr></thead>
+        <tbody>
+          <tr><td>Natur Aqua dús (szénsavas)</td><td>650 Ft</td><td>1 300 Ft</td></tr>
+          <tr><td>Natur Aqua csendes (szénsavmentes)</td><td>650 Ft</td><td>1 300 Ft</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="subsection">
+      <div class="subsection-title">Kimért üdítők</div>
+      <table class="drink-table">
+        <thead><tr><th>Ital</th><th>1 dl</th><th>1,75 l</th></tr></thead>
+        <tbody>
+          <tr><td>Coca Cola</td><td>200 Ft</td><td>2 000 Ft</td></tr>
+          <tr><td>Coca Cola Zero</td><td>200 Ft</td><td>2 000 Ft</td></tr>
+          <tr><td>Fanta Narancs</td><td>200 Ft</td><td>2 000 Ft</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<!-- Info bar -->
+<div class="info-bar">
+  <span><strong>WiFi:</strong> TEXAS_VENDEG</span>
+  <span class="info-dot"><strong>Jelszó:</strong> texas2002</span>
+  <span class="info-dot">Zóna adag: <strong>70%</strong></span>
+  <span class="info-dot">Csomagolás: <strong>200 Ft/db</strong></span>
+  <span class="info-dot">Árak köret nélkül értendők</span>
+</div>
+
+<footer>
+  <p>&copy; 2025 Texas Csávoly · <a href="index.html">Főoldal</a></p>
+</footer>
+
+<script>
+  // Allergen accordion
+  const toggle = document.getElementById('allergen-trigger');
+  const body   = document.getElementById('allergen-body');
+  toggle.addEventListener('click', () => {
+    const open = body.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open);
+  });
+
+  // Category scrollspy + click scroll
+  const catBtns = document.querySelectorAll('.cat-btn');
+  const sections = document.querySelectorAll('.menu-section');
+  const headerH = 64 + 50; // header + cat-nav
+
+  catBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.target);
+      if (!target) return;
+      const y = target.getBoundingClientRect().top + window.scrollY - headerH - 12;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    });
+    btn.addEventListener('mousedown', e => { btn.style.transform = 'scale(0.95)'; });
+    btn.addEventListener('mouseup', () => { btn.style.transform = ''; });
+    btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
+  });
+
+  // Scrollspy
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        catBtns.forEach(b => {
+          b.classList.toggle('active', b.dataset.target === id);
+        });
+        // scroll active btn into view in the cat-nav
+        const active = document.querySelector('.cat-btn.active');
+        if (active) active.scrollIntoView({ inline: 'nearest', block: 'nearest', behavior: 'smooth' });
+      }
+    });
+  }, { rootMargin: `-${headerH}px 0px -50% 0px`, threshold: 0 });
+
+  sections.forEach(s => io.observe(s));
+</script>
+</body>
+</html>
